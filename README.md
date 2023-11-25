@@ -1,8 +1,24 @@
 # eindopdracht2023-Mario-Daoud
-eindopdracht2023-Mario-Daoud created by GitHub Classroom
+Wintersport API
+
+## Database 
+![wintersport-db](https://github.com/vives-backendprogramming/eindopdracht2023-Mario-Daoud/assets/113902874/752bdf0d-988e-4fef-8712-5ad24661ceb7)
+
+### Tables
+#### Country
+Deze tabel bevat alle landen. Een land kan meerdere locaties hebben.
+#### Location
+Deze tabel bevat alle locaties waar er gesport kan worden. Een locatie is altijd verbonden aan 1 land. 
+#### Sport
+Deze tabel bevat alle sporten.
+#### LocationSport
+Deze tabel linkt locaties en sporten. Locaties kunnen namelijk meerdere sporten hebben en sporten kunnen in meerdere locaties gedaan worden.
+#### Review
+Deze tabel bevat alle reviews. Een review is altijd verbonden aan 1 user en aan 1 locatie.
+#### User
+Deze tabel bevat alle gebruikers.
 
 ## Docker compose file
-### Database
 PostgreSQL (:5432) + pgAdmin (:5050)
 ```yaml
 version: "3.8"
