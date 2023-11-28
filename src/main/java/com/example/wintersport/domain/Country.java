@@ -49,8 +49,4 @@ public class Country {
         this.locations = locations;
     }
 
-    public void addLocation(Location location) {
-        locations.add(location);
-        location.setCountry(this);
-    }
 }

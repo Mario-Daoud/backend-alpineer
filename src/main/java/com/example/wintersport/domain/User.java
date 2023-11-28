@@ -3,6 +3,9 @@ package com.example.wintersport.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -13,6 +16,8 @@ public class User {
     private String username;
     @NotBlank
     private String password;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Review> reviews;
 
     public User() {
     }
@@ -21,6 +26,7 @@ public class User {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.reviews = new HashSet<>();
     }
 
     public long getId() {

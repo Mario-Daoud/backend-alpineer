@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,6 +21,7 @@ public class Sport {
     private String description;
     @Max(5)
     @Min(1)
+    @NotNull
     private int difficulty;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

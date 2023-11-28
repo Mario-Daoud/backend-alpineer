@@ -1,6 +1,7 @@
 package com.example.wintersport.repository;
 
 import com.example.wintersport.domain.Location;
+import com.example.wintersport.domain.Review;
 import com.example.wintersport.domain.Sport;
 import org.springframework.data.jpa.repository.JpaRepository;
 

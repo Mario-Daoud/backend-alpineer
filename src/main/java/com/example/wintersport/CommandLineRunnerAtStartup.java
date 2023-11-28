@@ -1,16 +1,11 @@
 package com.example.wintersport;
 
-import com.example.wintersport.domain.Country;
-import com.example.wintersport.domain.Location;
-import com.example.wintersport.domain.Sport;
-import com.example.wintersport.domain.User;
-import com.example.wintersport.repository.CountryRepository;
-import com.example.wintersport.repository.LocationRepository;
-import com.example.wintersport.repository.SportRepository;
-import com.example.wintersport.repository.UserRepository;
+import com.example.wintersport.domain.*;
+import com.example.wintersport.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,11 +16,18 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
     private LocationRepository locationRepository;
     private SportRepository sportRepository;
     private UserRepository userRepository;
-    public CommandLineRunnerAtStartup(CountryRepository countryRepository, LocationRepository locationRepository, SportRepository sportRepository, UserRepository userRepository) {
+    private ReviewRepository reviewRepository;
+
+    public CommandLineRunnerAtStartup(CountryRepository countryRepository,
+                                      LocationRepository locationRepository,
+                                      SportRepository sportRepository,
+                                      UserRepository userRepository,
+                                      ReviewRepository reviewRepository) {
         this.countryRepository = countryRepository;
         this.locationRepository = locationRepository;
         this.sportRepository = sportRepository;
         this.userRepository = userRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -38,11 +40,10 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
 
         Location l1 = new Location();
         l1.setName("location 1");
+        l1.setCountry(c1);
         Set<Location> locations = new HashSet<>();
         locations.add(l1);
         if (locationRepository.findAll().isEmpty()) {
-            c1.setLocations(locations);
-            l1.setCountry(c1);
             locationRepository.save(l1);
         }
 
@@ -52,19 +53,27 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
         s1.setDifficulty(3);
         Set<Sport> sports = new HashSet<>();
         sports.add(s1);
+        s1.setLocations(locations);
+        l1.setSports(sports);
         if (sportRepository.findAll().isEmpty()) {
-            s1.setLocations(locations);
-            l1.setSports(sports);
+            locationRepository.save(l1);
             sportRepository.save(s1);
         }
 
         User u1 = new User();
         u1.setUsername("username");
-
         u1.setPassword("password");
         if (userRepository.findByUsername(u1.getUsername()).isEmpty()) {
             userRepository.save(u1);
         }
 
+        Review r1 = new Review();
+        r1.setDate(LocalDate.now());
+        r1.setLocation(l1);
+        r1.setRating(3);
+        r1.setUser(u1);
+        if (reviewRepository.findAll().isEmpty()) {
+            reviewRepository.save(r1);
+        }
     }
 }

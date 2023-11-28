@@ -2,6 +2,7 @@ package com.example.wintersport.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,9 +17,12 @@ public class Location {
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id")
+    @NotNull
     private Country country;
     @ManyToMany(mappedBy = "locations", fetch = FetchType.LAZY)
-    private Set<Sport> sports = new HashSet<>();
+    private Set<Sport> sports;
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Review> reviews;
 
     public Location() {
     }
@@ -28,6 +32,7 @@ public class Location {
         this.name = name;
         this.country = country;
         this.sports = new HashSet<>();
+        this.reviews = new HashSet<>();
     }
 
     public long getId() {
@@ -61,4 +66,13 @@ public class Location {
     public void setSports(Set<Sport> sports) {
         this.sports = sports;
     }
+
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(Set<Review> reviews) {
+        this.reviews = reviews;
+    }
+
 }
