@@ -14,7 +14,7 @@ public class Country {
     private long id;
     @NotBlank
     private String name;
-    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Location> locations;
 
     public Country() {}

@@ -5,6 +5,9 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "sports")
 public class Sport {
@@ -18,6 +21,13 @@ public class Sport {
     @Max(5)
     @Min(1)
     private int difficulty;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "sport_location",
+            joinColumns = @JoinColumn(name = "sport_id"),
+            inverseJoinColumns = @JoinColumn(name = "location_id")
+    )
+    private Set<Location> locations = new HashSet<>();
 
     public Sport() {
     }
@@ -27,6 +37,7 @@ public class Sport {
         this.name = name;
         this.description = description;
         this.difficulty = difficulty;
+        this.locations = new HashSet<>();
     }
 
     public long getId() {
@@ -59,5 +70,13 @@ public class Sport {
 
     public void setDifficulty(int difficulty) {
         this.difficulty = difficulty;
+    }
+
+    public Set<Location> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(Set<Location> locations) {
+        this.locations = locations;
     }
 }
