@@ -27,7 +27,7 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_USER: root
+      POSTGRES_USER: admin
       POSTGRES_PASSWORD: root
       POSTGRES_DB: wintersport_db
     ports:
