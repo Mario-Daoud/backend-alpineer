@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface LocationRepository extends JpaRepository<Location, Long> {
     List<Location> findAll();
     Optional<Location> findByName(String locationName);
-    Optional<List<Location>> findAllByCountry(String countryName);
+    Optional<List<Location>> findAllByCountryName(String countryName);
 }

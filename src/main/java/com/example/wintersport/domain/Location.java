@@ -1,6 +1,7 @@
 package com.example.wintersport.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "locations")
@@ -8,9 +9,8 @@ public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
+    @NotBlank
     private String name;
-
     @ManyToOne
     @JoinColumn(name = "country_id")
     private Country country;
