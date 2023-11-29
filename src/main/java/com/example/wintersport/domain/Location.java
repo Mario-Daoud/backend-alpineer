@@ -15,6 +15,11 @@ public class Location {
     private long id;
     @NotBlank
     private String name;
+    @NotNull
+    @Column(name = "snow_height")
+    private int snowHeight;
+    @NotBlank
+    private String description;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id")
     @NotNull
@@ -27,9 +32,11 @@ public class Location {
     public Location() {
     }
 
-    public Location(long id, String name, Country country) {
+    public Location(long id, String name, int snowHeight, String description, Country country) {
         this.id = id;
         this.name = name;
+        this.snowHeight = snowHeight;
+        this.description = description;
         this.country = country;
         this.sports = new HashSet<>();
         this.reviews = new HashSet<>();
@@ -75,4 +82,19 @@ public class Location {
         this.reviews = reviews;
     }
 
+    public int getSnowHeight() {
+        return snowHeight;
+    }
+
+    public void setSnowHeight(int snowHeight) {
+        this.snowHeight = snowHeight;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
