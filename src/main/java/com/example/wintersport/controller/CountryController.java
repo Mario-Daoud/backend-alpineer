@@ -37,7 +37,7 @@ public class CountryController {
 
         Random random = new Random();
         while (featuredLocations.size() < 3) {
-            int randomNumber = random.nextInt(allCountries.size() - 1);
+            int randomNumber = random.nextInt(allCountries.size());
 
             if (allCountries.size() <= 3) {
                 return allCountries;

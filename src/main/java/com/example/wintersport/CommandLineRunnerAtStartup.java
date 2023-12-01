@@ -43,6 +43,9 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
         l1.setCountry(c1);
         l1.setSnowHeight(122);
         l1.setDescription("perfect for beginners");
+        l1.setTrackLength(25);
+        l1.setChairlifts(3);
+        l1.setDegrees(-4);
         Set<Location> locations = new HashSet<>();
         locations.add(l1);
         if (locationRepository.findAll().isEmpty()) {

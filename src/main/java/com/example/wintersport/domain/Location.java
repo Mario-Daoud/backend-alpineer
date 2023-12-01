@@ -21,7 +21,7 @@ public class Location {
     private int snowHeight;
     @NotBlank
     private String description;
-    @NotBlank
+    @NotNull
     private int degrees;
     @NotNull
     @Min(0)
