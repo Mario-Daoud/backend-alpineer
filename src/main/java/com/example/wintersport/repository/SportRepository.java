@@ -7,5 +7,4 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SportRepository extends JpaRepository<Sport, Long> {
-    Optional<Sport> findAllByName(String sportName);
 }

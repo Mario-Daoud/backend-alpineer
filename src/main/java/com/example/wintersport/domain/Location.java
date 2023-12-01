@@ -1,6 +1,7 @@
 package com.example.wintersport.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -20,6 +21,14 @@ public class Location {
     private int snowHeight;
     @NotBlank
     private String description;
+    @NotBlank
+    private int degrees;
+    @NotNull
+    @Min(0)
+    private int trackLength;
+    @NotNull
+    @Min(0)
+    private int chairlifts;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id")
     @NotNull
@@ -32,11 +41,14 @@ public class Location {
     public Location() {
     }
 
-    public Location(long id, String name, int snowHeight, String description, Country country) {
+    public Location(long id, String name, int snowHeight, String description, int degrees, int trackLength, int chairlifts, Country country) {
         this.id = id;
         this.name = name;
         this.snowHeight = snowHeight;
         this.description = description;
+        this.degrees = degrees;
+        this.trackLength = trackLength;
+        this.chairlifts = chairlifts;
         this.country = country;
         this.sports = new HashSet<>();
         this.reviews = new HashSet<>();
@@ -96,5 +108,29 @@ public class Location {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getDegrees() {
+        return degrees;
+    }
+
+    public void setDegrees(int degrees) {
+        this.degrees = degrees;
+    }
+
+    public int getTrackLength() {
+        return trackLength;
+    }
+
+    public void setTrackLength(int trackLength) {
+        this.trackLength = trackLength;
+    }
+
+    public int getChairlifts() {
+        return chairlifts;
+    }
+
+    public void setChairlifts(int chairlifts) {
+        this.chairlifts = chairlifts;
     }
 }
