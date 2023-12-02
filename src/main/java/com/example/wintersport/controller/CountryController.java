@@ -14,7 +14,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/countries")
+@RequestMapping("/api/country")
 public class CountryController {
     private final CountryRepository countryRepository;
     private final LocationRepository locationRepository;
