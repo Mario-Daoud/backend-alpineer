@@ -3,6 +3,7 @@ package com.example.wintersport;
 import com.example.wintersport.domain.*;
 import com.example.wintersport.repository.*;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
     private SportRepository sportRepository;
     private UserRepository userRepository;
     private ReviewRepository reviewRepository;
+    private BCryptPasswordEncoder passwordEncoder;
 
     public CommandLineRunnerAtStartup(CountryRepository countryRepository,
                                       LocationRepository locationRepository,
@@ -28,6 +30,7 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
         this.sportRepository = sportRepository;
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override
@@ -67,7 +70,7 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
 
         User u1 = new User();
         u1.setUsername("username");
-        u1.setPassword("password");
+        u1.setPassword(passwordEncoder.encode("password"));
         if (userRepository.findByUsername(u1.getUsername()).isEmpty()) {
             userRepository.save(u1);
         }
