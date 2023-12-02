@@ -13,14 +13,13 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin
 public class UserController {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
@@ -28,15 +27,29 @@ public class UserController {
         return ResponseEntity.ok(userRepository.findAll());
     }
 
+
     @PostMapping("login")
     @ResponseStatus(HttpStatus.OK)
-    public String login(@RequestBody @Valid UserRequest userRequest) {
+    public ResponseEntity<Void> login(@RequestBody @Valid UserRequest userRequest) {
         Optional<User> user = userRepository.findByUsername(userRequest.getUsername());
-        if (user.isPresent()) {
-            if (passwordEncoder.matches(userRequest.getPassword(), user.get().getPassword())) {
-                return "Login successful";
-            }
+        if (user.isPresent() && passwordEncoder.matches(userRequest.getPassword(), user.get().getPassword())) {
+            return ResponseEntity.ok().build();
         }
-        return "Login failed";
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
+    @PostMapping("register")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Void> register(@RequestBody @Valid UserRequest userRequest) {
+        Optional<User> existingUser = userRepository.findByUsername(userRequest.getUsername());
+        if (existingUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+        User user = new User(userRequest.getUsername(), passwordEncoder.encode(userRequest.getPassword()));
+        userRepository.save(user);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
 }

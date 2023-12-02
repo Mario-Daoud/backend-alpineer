@@ -34,8 +34,7 @@ public class Sport {
     public Sport() {
     }
 
-    public Sport(long id, String name, String description, int difficulty) {
-        this.id = id;
+    public Sport( String name, String description, int difficulty) {
         this.name = name;
         this.description = description;
         this.difficulty = difficulty;

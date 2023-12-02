@@ -41,8 +41,7 @@ public class Location {
     public Location() {
     }
 
-    public Location(long id, String name, int snowHeight, String description, int degrees, int trackLength, int chairlifts, Country country) {
-        this.id = id;
+    public Location( String name, int snowHeight, String description, int degrees, int trackLength, int chairlifts, Country country) {
         this.name = name;
         this.snowHeight = snowHeight;
         this.description = description;

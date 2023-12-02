@@ -19,8 +19,7 @@ public class Country {
 
     public Country() {}
 
-    public Country(long id, String name) {
-        this.id = id;
+    public Country( String name) {
         this.name = name;
         this.locations = new HashSet<>();
     }

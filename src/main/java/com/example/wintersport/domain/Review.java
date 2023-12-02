@@ -28,8 +28,7 @@ public class Review {
     public Review() {
     }
 
-    public Review(long id, int rating, LocalDate date, User user, Location location) {
-        this.id = id;
+    public Review(int rating, LocalDate date, User user, Location location) {
         this.rating = rating;
         this.date = date;
         this.user = user;
