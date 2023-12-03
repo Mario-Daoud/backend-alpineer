@@ -1,0 +1,49 @@
+package com.example.wintersport.controller;
+
+import com.example.wintersport.domain.Location;
+import com.example.wintersport.repository.LocationRepository;
+import com.example.wintersport.response.LocationCountryResponse;
+import com.example.wintersport.response.LocationResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.*;
+
+@RestController
+@RequestMapping("/api/location")
+@CrossOrigin
+public class LocationController {
+    private final LocationRepository locationRepository;
+
+    public LocationController(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
+    }
+
+    @GetMapping("featured")
+    public ResponseEntity<Set<LocationCountryResponse>> getFeaturedLocation() {
+        List<Location> locations = this.locationRepository.findAll();
+        Random random = new Random();
+        Set<LocationCountryResponse> uniqueFeaturedLocations = new HashSet<>();
+
+        int featuredLocationSize = 3;
+
+        while (uniqueFeaturedLocations.size() < featuredLocationSize) {
+            int randomNumber = random.nextInt(locations.size());
+            Location randomLocation = locations.get(randomNumber);
+
+            boolean nameExists = uniqueFeaturedLocations.stream()
+                    .anyMatch(locationResponse -> locationResponse.getName().equals(randomLocation.getName()));
+
+            if (!nameExists) {
+                uniqueFeaturedLocations.add(new LocationCountryResponse(randomLocation));
+            }
+
+        }
+
+        return ResponseEntity.ok(uniqueFeaturedLocations);
+    }
+}
