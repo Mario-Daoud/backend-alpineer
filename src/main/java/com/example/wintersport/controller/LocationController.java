@@ -23,6 +23,13 @@ public class LocationController {
         this.locationRepository = locationRepository;
     }
 
+    @GetMapping
+    public ResponseEntity<List<LocationResponse>> getAllLocations() {
+        List<Location> locations = this.locationRepository.findAll();
+        List<LocationResponse> locationResponses = locations.stream().map(LocationResponse::new).toList();
+        return ResponseEntity.ok(locationResponses);
+    }
+
     @GetMapping("featured")
     public ResponseEntity<Set<LocationCountryResponse>> getFeaturedLocation() {
         List<Location> locations = this.locationRepository.findAll();
