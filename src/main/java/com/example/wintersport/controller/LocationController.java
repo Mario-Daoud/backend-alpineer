@@ -24,9 +24,9 @@ public class LocationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LocationResponse>> getAllLocations() {
+    public ResponseEntity<List<LocationCountryResponse>> getAllLocationsWithCountries() {
         List<Location> locations = this.locationRepository.findAll();
-        List<LocationResponse> locationResponses = locations.stream().map(LocationResponse::new).toList();
+        List<LocationCountryResponse> locationResponses = locations.stream().map(LocationCountryResponse::new).toList();
         return ResponseEntity.ok(locationResponses);
     }
 
