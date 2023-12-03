@@ -53,6 +53,18 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
             Country c4 = new Country();
             c4.setName("Austria");
             countryRepository.save(c4);
+
+            Country c5 = new Country();
+            c5.setName("Germany");
+            countryRepository.save(c5);
+
+            Country c6 = new Country();
+            c6.setName("USA");
+            countryRepository.save(c6);
+
+            Country c7 = new Country();
+            c7.setName("Canada");
+            countryRepository.save(c7);
         }
 
         if (locationRepository.findAll().isEmpty()) {
@@ -135,6 +147,36 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
             l8.setDegrees(-4);
             l8.setChairlifts(3);
             locationRepository.save(l8);
+
+            Location l9 = new Location();
+            l9.setName("Garmisch-Partenkirchen");
+            l9.setCountry(countryRepository.findByName("Germany").orElse(null));
+            l9.setSnowHeight(140);
+            l9.setDescription("Bavarian ski resort");
+            l9.setTrackLength(28);
+            l9.setDegrees(-3);
+            l9.setChairlifts(3);
+            locationRepository.save(l9);
+
+            Location l10 = new Location();
+            l10.setName("Aspen");
+            l10.setCountry(countryRepository.findByName("USA").orElse(null));
+            l10.setSnowHeight(180);
+            l10.setDescription("Famous American skiing destination");
+            l10.setTrackLength(40);
+            l10.setDegrees(-8);
+            l10.setChairlifts(6);
+            locationRepository.save(l10);
+
+            Location l11 = new Location();
+            l11.setName("Banff");
+            l11.setCountry(countryRepository.findByName("Canada").orElse(null));
+            l11.setSnowHeight(160);
+            l11.setDescription("Canadian Rockies beauty");
+            l11.setTrackLength(35);
+            l11.setDegrees(-7);
+            l11.setChairlifts(5);
+            locationRepository.save(l11);
         }
 
         if (sportRepository.findAll().isEmpty()) {
@@ -164,6 +206,42 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
             locationRepository.findByName("Courchevel").ifPresent(locations3::add);
             s3.setLocations(locations3);
             sportRepository.save(s3);
+
+            Sport s4 = new Sport();
+            s4.setName("Cross-Country Skiing");
+            s4.setDescription("Description for Cross-Country Skiing");
+            s4.setDifficulty(2);
+            Set<Location> locations4 = new HashSet<>();
+            locationRepository.findByName("Oslo").ifPresent(locations4::add);
+            s4.setLocations(locations4);
+            sportRepository.save(s4);
+
+            Sport s5 = new Sport();
+            s5.setName("Snowmobiling");
+            s5.setDescription("Description for Snowmobiling");
+            s5.setDifficulty(1);
+            Set<Location> locations5 = new HashSet<>();
+            locationRepository.findByName("Garmisch-Partenkirchen").ifPresent(locations5::add);
+            s5.setLocations(locations5);
+            sportRepository.save(s5);
+
+            Sport s6 = new Sport();
+            s6.setName("Ice Climbing");
+            s6.setDescription("Description for Ice Climbing");
+            s6.setDifficulty(4);
+            Set<Location> locations6 = new HashSet<>();
+            locationRepository.findByName("Banff").ifPresent(locations6::add);
+            s6.setLocations(locations6);
+            sportRepository.save(s6);
+
+            Sport s7 = new Sport();
+            s7.setName("Snowshoeing");
+            s7.setDescription("Description for Snowshoeing");
+            s7.setDifficulty(2);
+            Set<Location> locations7 = new HashSet<>();
+            locationRepository.findByName("Aspen").ifPresent(locations7::add);
+            s7.setLocations(locations7);
+            sportRepository.save(s7);
         }
 
         if (userRepository.findByUsername("username").isEmpty()) {
@@ -176,6 +254,7 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
             u2.setUsername("user2");
             u2.setPassword(passwordEncoder.encode("password2"));
             userRepository.save(u2);
+
         }
 
         if (reviewRepository.findAll().isEmpty()) {
@@ -194,6 +273,79 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
             r2.setRating(5);
             r2.setUser(userRepository.findByUsername("user2").orElse(null));
             reviewRepository.save(r2);
+
+            Review r3 = new Review();
+            r3.setDate(LocalDate.now().minusDays(14));
+            Location location3 = locationRepository.findByName("Garmisch-Partenkirchen").orElse(null);
+            r3.setLocation(location3);
+            r3.setRating(4);
+            r3.setUser(userRepository.findByUsername("user2").orElse(null));
+            reviewRepository.save(r3);
+
+            Review r4 = new Review();
+            r4.setDate(LocalDate.now().minusDays(3));
+            Location location4 = locationRepository.findByName("Chamonix").orElse(null);
+            r4.setLocation(location4);
+            r4.setRating(5);
+            r4.setUser(userRepository.findByUsername("user2").orElse(null));
+            reviewRepository.save(r4);
+
+            Review r5 = new Review();
+            r5.setDate(LocalDate.now().minusDays(10));
+            Location location5 = locationRepository.findByName("Aspen").orElse(null);
+            r5.setLocation(location5);
+            r5.setRating(5);
+            r5.setUser(userRepository.findByUsername("user2").orElse(null));
+            reviewRepository.save(r5);
+
+            Review r6 = new Review();
+            r6.setDate(LocalDate.now().minusDays(5));
+            Location location6 = locationRepository.findByName("Banff").orElse(null);
+            r6.setLocation(location6);
+            r6.setRating(4);
+            r6.setUser(userRepository.findByUsername("user2").orElse(null));
+            reviewRepository.save(r6);
+
+            // Adding more reviews for existing locations
+            Review r7 = new Review();
+            r7.setDate(LocalDate.now().minusDays(8));
+            Location location7 = locationRepository.findByName("Dolomites").orElse(null);
+            r7.setLocation(location7);
+            r7.setRating(3);
+            r7.setUser(userRepository.findByUsername("username").orElse(null));
+            reviewRepository.save(r7);
+
+            Review r8 = new Review();
+            r8.setDate(LocalDate.now().minusDays(2));
+            Location location8 = locationRepository.findByName("Chamonix").orElse(null);
+            r8.setLocation(location8);
+            r8.setRating(5);
+            r8.setUser(userRepository.findByUsername("user2").orElse(null));
+            reviewRepository.save(r8);
+
+            Review r9 = new Review();
+            r9.setDate(LocalDate.now().minusDays(7));
+            Location location10 = locationRepository.findByName("Verbier").orElse(null);
+            r9.setLocation(location10);
+            r9.setRating(4);
+            r9.setUser(userRepository.findByUsername("username").orElse(null));
+            reviewRepository.save(r9);
+
+            Review r10 = new Review();
+            r10.setDate(LocalDate.now().minusDays(3));
+            Location location11 = locationRepository.findByName("Aspen").orElse(null);
+            r10.setLocation(location11);
+            r10.setRating(3);
+            r10.setUser(userRepository.findByUsername("username").orElse(null));
+            reviewRepository.save(r10);
+
+            Review r11 = new Review();
+            r11.setDate(LocalDate.now().minusDays(6));
+            Location location12 = locationRepository.findByName("Banff").orElse(null);
+            r11.setLocation(location12);
+            r11.setRating(5);
+            r11.setUser(userRepository.findByUsername("username").orElse(null));
+            reviewRepository.save(r11);
         }
     }
 
