@@ -35,7 +35,7 @@ public class Location {
     private Country country;
     @ManyToMany(mappedBy = "locations", fetch = FetchType.LAZY)
     private Set<Sport> sports;
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Review> reviews;
 
     public Location() {
