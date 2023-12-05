@@ -52,9 +52,9 @@ public class LocationController {
     }
 
     @GetMapping("country/{country}")
-    public ResponseEntity<List<LocationResponse>> getLocationsByCountry(@PathVariable String country) {
+    public ResponseEntity<List<LocationCountryResponse>> getLocationsByCountry(@PathVariable String country) {
         List<Location> locations = this.locationRepository.findByCountryName(country);
-        List<LocationResponse> locationResponses = locations.stream().map(LocationResponse::new).toList();
+        List<LocationCountryResponse> locationResponses = locations.stream().map(LocationCountryResponse::new).toList();
         return ResponseEntity.ok(locationResponses);
     }
 }
