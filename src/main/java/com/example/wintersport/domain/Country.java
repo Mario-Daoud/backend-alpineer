@@ -11,7 +11,7 @@ import java.util.Set;
 public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @NotBlank
     private String name;
     @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -24,7 +24,7 @@ public class Country {
         this.locations = new HashSet<>();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

@@ -11,7 +11,7 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @NotBlank
     private String username;
     @NotBlank
@@ -28,7 +28,7 @@ public class User {
         this.reviews = new HashSet<>();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

@@ -3,7 +3,7 @@ package com.example.wintersport.response;
 import com.example.wintersport.domain.Location;
 
 public class LocationResponse {
-    private long id;
+    private Long id;
     private String name;
     private int snowHeight;
     private String description;
@@ -21,7 +21,7 @@ public class LocationResponse {
         this.chairlifts = location.getChairlifts();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

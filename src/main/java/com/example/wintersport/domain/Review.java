@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @NotNull
     @Max(5)
     @Min(1)
@@ -35,7 +35,7 @@ public class Review {
         this.location = location;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

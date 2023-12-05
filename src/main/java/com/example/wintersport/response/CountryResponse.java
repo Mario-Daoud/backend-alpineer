@@ -3,7 +3,7 @@ package com.example.wintersport.response;
 import com.example.wintersport.domain.Country;
 
 public class CountryResponse {
-    private long id;
+    private Long id;
     private String name;
 
     public CountryResponse(Country country) {
@@ -11,7 +11,7 @@ public class CountryResponse {
         this.name = country.getName();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

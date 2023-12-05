@@ -14,7 +14,7 @@ import java.util.Set;
 public class Sport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @NotBlank
     private String name;
     @NotBlank
@@ -41,7 +41,7 @@ public class Sport {
         this.locations = new HashSet<>();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
