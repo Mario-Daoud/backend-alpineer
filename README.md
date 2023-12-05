@@ -2,6 +2,7 @@
 Wintersport API
 
 ## Database 
+![db-diagram](https://github.com/vives-backendprogramming/eindopdracht2023-Mario-Daoud/assets/113902874/8f02a586-b84e-41bf-b3ee-b052810862ba)
 
 #### Country
 Deze tabel bevat alle landen. Een land kan meerdere locaties hebben.
