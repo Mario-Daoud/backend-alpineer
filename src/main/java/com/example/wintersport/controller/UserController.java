@@ -34,6 +34,12 @@ public class UserController {
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("{username}")
+    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping("login")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> login(@RequestBody @Valid UserRequest userRequest) {
