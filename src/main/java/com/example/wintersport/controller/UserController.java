@@ -28,19 +28,6 @@ public class UserController {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserResponse>> getAllUsers() {
-        List<UserResponse> users = userRepository.findAll().stream().map(UserResponse::new).collect(Collectors.toList());
-        return ResponseEntity.ok(users);
-    }
-
-    @GetMapping("id/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
-        Optional<User> user = userRepository.findById(id);
-        UserResponse userResponse = new UserResponse(user.get());
-        return user.map(value -> ResponseEntity.ok(userResponse)).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
     @GetMapping("username/{username}")
     public ResponseEntity<UserResponse> getUserByUsername(@PathVariable String username) {
         Optional<User> user = userRepository.findByUsername(username);
@@ -88,18 +75,6 @@ public class UserController {
             updatedUser.setPassword(user.getPassword());
             userRepository.save(updatedUser);
             return ResponseEntity.ok(new UserResponse(updatedUser));
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    // TODO: make response type
-    @DeleteMapping("{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        Optional<User> existingUser = userRepository.findById(id);
-        if (existingUser.isPresent()) {
-            userRepository.deleteById(id);
-            return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }
