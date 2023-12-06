@@ -51,4 +51,12 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(Set<Review> reviews) {
+        this.reviews = reviews;
+    }
 }

@@ -3,13 +3,16 @@ package com.example.wintersport.controller;
 import com.example.wintersport.domain.User;
 import com.example.wintersport.repository.UserRepository;
 import com.example.wintersport.request.UserRequest;
+import com.example.wintersport.response.UserResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/user")
@@ -24,20 +27,23 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<User>> getAllUsers() {
-        return ResponseEntity.ok(userRepository.findAll());
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        List<UserResponse> users = userRepository.findAll().stream().map(UserResponse::new).collect(Collectors.toList());
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        UserResponse userResponse = new UserResponse(user.get());
+        return user.map(value -> ResponseEntity.ok(userResponse)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("{username}")
-    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
+    public ResponseEntity<UserResponse> getUserByUsername(@PathVariable String username) {
         Optional<User> user = userRepository.findByUsername(username);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        UserResponse userResponse = new UserResponse(user.get());
+        return user.map(value -> ResponseEntity.ok(userResponse)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("login")
