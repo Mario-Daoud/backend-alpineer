@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,14 +34,14 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("id/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
         UserResponse userResponse = new UserResponse(user.get());
         return user.map(value -> ResponseEntity.ok(userResponse)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("{username}")
+    @GetMapping("username/{username}")
     public ResponseEntity<UserResponse> getUserByUsername(@PathVariable String username) {
         Optional<User> user = userRepository.findByUsername(username);
         UserResponse userResponse = new UserResponse(user.get());
@@ -58,16 +60,23 @@ public class UserController {
 
     @PostMapping("register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> register(@RequestBody @Valid UserRequest userRequest) {
+    public ResponseEntity<UserResponse> register(@RequestBody @Valid UserRequest userRequest) {
         Optional<User> existingUser = userRepository.findByUsername(userRequest.getUsername());
         if (existingUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
+        User user = new User();
+        user.setUsername(userRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
-        User user = new User(userRequest.getUsername(), passwordEncoder.encode(userRequest.getPassword()));
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedUser.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(new UserResponse(savedUser));
     }
 
     @PutMapping("{id}")
