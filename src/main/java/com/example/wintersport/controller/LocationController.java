@@ -51,9 +51,9 @@ public class LocationController {
         return ResponseEntity.ok(uniqueFeaturedLocations);
     }
 
-    @GetMapping("country/{country}")
-    public ResponseEntity<List<LocationCountryResponse>> getLocationsByCountry(@PathVariable String country) {
-        List<Location> locations = this.locationRepository.findByCountryName(country);
+    @GetMapping("country/{countryName}")
+    public ResponseEntity<List<LocationCountryResponse>> getLocationsByCountry(@PathVariable String countryName) {
+        List<Location> locations = this.locationRepository.findByCountryName(countryName);
         List<LocationCountryResponse> locationResponses = locations.stream().map(LocationCountryResponse::new).toList();
         return ResponseEntity.ok(locationResponses);
     }

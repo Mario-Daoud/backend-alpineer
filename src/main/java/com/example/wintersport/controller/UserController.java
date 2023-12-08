@@ -66,8 +66,8 @@ public class UserController {
         return ResponseEntity.created(location).body(new UserResponse(savedUser));
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody User user) {
+    @PutMapping("{userId}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable(name = "userId") Long id, @RequestBody User user) {
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isPresent()) {
             User updatedUser = existingUser.get();
