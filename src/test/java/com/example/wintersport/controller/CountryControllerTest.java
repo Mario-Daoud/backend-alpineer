@@ -5,9 +5,12 @@ import com.example.wintersport.repository.CountryRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -17,7 +20,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 @WebMvcTest(CountryController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class CountryControllerTest {
     private final String baseUrl = "/api/country";
     @MockBean
@@ -46,6 +51,16 @@ public class CountryControllerTest {
                 .andExpect(jsonPath("$[0].name").value("Netherlands"))
                 .andExpect(jsonPath("$[1].name").value("Germany"))
                 .andExpect(jsonPath("$[2].name").value("France"));
+    }
 
+    @Test
+    public void getAllCountriesNonExisting() throws Exception {
+        when(this.countryRepository.findAll()).thenReturn(new ArrayList<>());
+
+        mockMvc.perform(get(baseUrl))
+                .andDo(print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
     }
 }
