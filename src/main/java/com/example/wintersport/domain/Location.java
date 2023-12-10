@@ -63,7 +63,7 @@ public class Location {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.toLowerCase().trim();
     }
 
     public Country getCountry() {
@@ -95,7 +95,7 @@ public class Location {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = description.trim();
     }
 
     public int getDegrees() {

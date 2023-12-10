@@ -28,9 +28,9 @@ public class Review {
     public Review() {
     }
 
-    public Review(int rating, LocalDate date, User user, Location location) {
+    public Review(int rating, User user, Location location) {
         this.rating = rating;
-        this.date = date;
+        this.date = LocalDate.now();
         this.user = user;
         this.location = location;
     }
@@ -53,10 +53,6 @@ public class Review {
 
     public LocalDate getDate() {
         return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
     }
 
     public User getUser() {

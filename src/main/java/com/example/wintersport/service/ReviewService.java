@@ -30,7 +30,6 @@ public class ReviewService {
 
         Review review = new Review();
         review.setRating(reviewRequest.getRating());
-        review.setDate(LocalDate.now());
         review.setUser(user);
         review.setLocation(location);
         reviewRepository.save(review);

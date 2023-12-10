@@ -189,7 +189,6 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
 
         if (reviewRepository.findAll().isEmpty()) {
             Review r1 = new Review();
-            r1.setDate(LocalDate.now());
             Location location1 = locationRepository.findByName("Alps").orElse(null);
             r1.setLocation(location1);
             r1.setRating(4);
@@ -197,7 +196,6 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
             reviewRepository.save(r1);
 
             Review r2 = new Review();
-            r2.setDate(LocalDate.now().minusDays(7));
             Location location2 = locationRepository.findByName("Dolomites").orElse(null);
             r2.setLocation(location2);
             r2.setRating(5);
@@ -205,7 +203,6 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
             reviewRepository.save(r2);
 
             Review r3 = new Review();
-            r3.setDate(LocalDate.now().minusDays(14));
             Location location3 = locationRepository.findByName("Garmisch-Partenkirchen").orElse(null);
             r3.setLocation(location3);
             r3.setRating(4);
@@ -213,7 +210,6 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
             reviewRepository.save(r3);
 
             Review r4 = new Review();
-            r4.setDate(LocalDate.now().minusDays(3));
             Location location4 = locationRepository.findByName("Chamonix").orElse(null);
             r4.setLocation(location4);
             r4.setRating(5);
@@ -221,7 +217,6 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
             reviewRepository.save(r4);
 
             Review r5 = new Review();
-            r5.setDate(LocalDate.now().minusDays(10));
             Location location5 = locationRepository.findByName("Aspen").orElse(null);
             r5.setLocation(location5);
             r5.setRating(5);
@@ -229,16 +224,13 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
             reviewRepository.save(r5);
 
             Review r6 = new Review();
-            r6.setDate(LocalDate.now().minusDays(5));
             Location location6 = locationRepository.findByName("Banff").orElse(null);
             r6.setLocation(location6);
             r6.setRating(4);
             r6.setUser(userRepository.findByUsername("user2").orElse(null));
             reviewRepository.save(r6);
 
-            // Adding more reviews for existing locations
             Review r7 = new Review();
-            r7.setDate(LocalDate.now().minusDays(8));
             Location location7 = locationRepository.findByName("Dolomites").orElse(null);
             r7.setLocation(location7);
             r7.setRating(3);
@@ -246,7 +238,6 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
             reviewRepository.save(r7);
 
             Review r8 = new Review();
-            r8.setDate(LocalDate.now().minusDays(2));
             Location location8 = locationRepository.findByName("Chamonix").orElse(null);
             r8.setLocation(location8);
             r8.setRating(5);
@@ -254,7 +245,6 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
             reviewRepository.save(r8);
 
             Review r9 = new Review();
-            r9.setDate(LocalDate.now().minusDays(7));
             Location location10 = locationRepository.findByName("Verbier").orElse(null);
             r9.setLocation(location10);
             r9.setRating(4);
@@ -262,7 +252,6 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
             reviewRepository.save(r9);
 
             Review r10 = new Review();
-            r10.setDate(LocalDate.now().minusDays(3));
             Location location11 = locationRepository.findByName("Aspen").orElse(null);
             r10.setLocation(location11);
             r10.setRating(3);
@@ -270,7 +259,6 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
             reviewRepository.save(r10);
 
             Review r11 = new Review();
-            r11.setDate(LocalDate.now().minusDays(6));
             Location location12 = locationRepository.findByName("Banff").orElse(null);
             r11.setLocation(location12);
             r11.setRating(5);
