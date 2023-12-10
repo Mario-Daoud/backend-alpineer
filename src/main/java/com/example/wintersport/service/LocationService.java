@@ -2,7 +2,6 @@ package com.example.wintersport.service;
 
 import com.example.wintersport.domain.Country;
 import com.example.wintersport.domain.Location;
-import com.example.wintersport.exception.ResourceNotFoundException;
 import com.example.wintersport.repository.CountryRepository;
 import com.example.wintersport.repository.LocationRepository;
 import com.example.wintersport.response.LocationCountryResponse;
@@ -12,44 +11,35 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class LocationService {
     private final LocationRepository locationRepository;
-    private final CountryRepository countryRepository;
 
-    public LocationService(LocationRepository locationRepository, CountryRepository countryRepository) {
+    public LocationService(LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
-        this.countryRepository = countryRepository;
     }
 
-    public Set<LocationCountryResponse> fillFeaturedLocations() {
-        List<Location> locations = this.locationRepository.findAll();
+    public Set<LocationCountryResponse> getFeaturedLocations() {
+        List<Location> locations = locationRepository.findAll();
         Random random = new Random();
-        Set<LocationCountryResponse> uniqueFeaturedLocations = new HashSet<>();
+        Set<LocationCountryResponse> featuredLocations = new HashSet<>();
 
         int featuredLocationSize = 5;
 
-        while (uniqueFeaturedLocations.size() < featuredLocationSize) {
+        while (featuredLocations.size() < featuredLocationSize) {
             int randomNumber = random.nextInt(locations.size());
             Location randomLocation = locations.get(randomNumber);
 
-            boolean nameExists = uniqueFeaturedLocations.stream()
+            boolean isLocationInList = featuredLocations.stream()
                     .anyMatch(locationResponse -> locationResponse.getName().equals(randomLocation.getName()));
 
-            if (!nameExists) {
-                uniqueFeaturedLocations.add(new LocationCountryResponse(randomLocation));
+            if (!isLocationInList) {
+                featuredLocations.add(new LocationCountryResponse(randomLocation));
             }
-
         }
 
-        return uniqueFeaturedLocations;
-    }
-
-    public List<LocationCountryResponse> getLocationsByCountryId(Long countryId) {
-        Country country = this.countryRepository.findById(countryId).orElseThrow(() -> new ResourceNotFoundException("country"));
-        List<Location> locations = this.locationRepository.findByCountryName(country.getName());
-        List<LocationCountryResponse> locationResponses = locations.stream().map(LocationCountryResponse::new).toList();
-        return locationResponses;
+        return featuredLocations;
     }
 }

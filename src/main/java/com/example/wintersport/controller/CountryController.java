@@ -19,6 +19,9 @@ public class CountryController {
 
     @GetMapping
     public List<CountryResponse> getAllCountries() {
-        return this.countryRepository.findAll().stream().map(CountryResponse::new).collect(Collectors.toList());
+        return this.countryRepository.findAll()
+                .stream()
+                .map(CountryResponse::new)
+                .collect(Collectors.toList());
     }
 }

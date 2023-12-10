@@ -3,7 +3,6 @@ package com.example.wintersport.service;
 import com.example.wintersport.domain.Location;
 import com.example.wintersport.domain.Review;
 import com.example.wintersport.domain.User;
-import com.example.wintersport.exception.ResourceNotFoundException;
 import com.example.wintersport.repository.LocationRepository;
 import com.example.wintersport.repository.ReviewRepository;
 import com.example.wintersport.repository.UserRepository;
@@ -25,9 +24,9 @@ public class ReviewService {
         this.locationrepository = locationrepository;
     }
 
-    public ReviewLocationUserResponse addReview(Long userId, Long locationId, ReviewRequest reviewRequest) throws ResourceNotFoundException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user"));
-        Location location = locationrepository.findById(locationId).orElseThrow(() -> new ResourceNotFoundException("location"));
+    public ReviewLocationUserResponse addReview(Long userId, Long locationId, ReviewRequest reviewRequest) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("This user does not exist"));
+        Location location = locationrepository.findById(locationId).orElseThrow(() -> new RuntimeException("This location does not exist"));
 
         Review review = new Review();
         review.setRating(reviewRequest.getRating());

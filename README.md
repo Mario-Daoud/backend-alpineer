@@ -29,7 +29,7 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: wintersport_db
+      POSTGRES_MULTIPLE_DATABASES: wintersport_db, test_wintersport_db
     ports:
       - "5432:5432"
   pgadmin:
@@ -41,4 +41,5 @@ services:
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
       - "5050:80"
+
 ```

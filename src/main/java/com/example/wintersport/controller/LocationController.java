@@ -1,14 +1,16 @@
 package com.example.wintersport.controller;
 
-import com.example.wintersport.domain.Location;
-import com.example.wintersport.exception.ResourceNotFoundException;
+import com.example.wintersport.domain.Country;
+import com.example.wintersport.repository.CountryRepository;
 import com.example.wintersport.repository.LocationRepository;
 import com.example.wintersport.response.LocationCountryResponse;
+import com.example.wintersport.response.LocationResponse;
 import com.example.wintersport.service.LocationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/location")
@@ -16,35 +18,42 @@ import java.util.*;
 public class LocationController {
     private final LocationRepository locationRepository;
     private final LocationService locationService;
+    private CountryRepository countryRepository;
 
-    public LocationController(LocationRepository locationRepository, LocationService locationService) {
+    public LocationController(LocationRepository locationRepository,
+                              LocationService locationService,
+                              CountryRepository countryRepository) {
         this.locationRepository = locationRepository;
         this.locationService = locationService;
+        this.countryRepository = countryRepository;
     }
 
     @GetMapping
     public ResponseEntity<List<LocationCountryResponse>> getAllLocationsWithCountries() {
-        List<Location> locations = this.locationRepository.findAll();
-        List<LocationCountryResponse> locationResponses = locations.stream().map(LocationCountryResponse::new).toList();
+        List<LocationCountryResponse> locationResponses = locationRepository.findAll()
+                .stream()
+                .map(LocationCountryResponse::new)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(locationResponses);
     }
 
-    @GetMapping("featured")
+    @GetMapping("/featured")
     public ResponseEntity<Set<LocationCountryResponse>> getFeaturedLocation() {
-        Set<LocationCountryResponse> featuredLocations = this.locationService.fillFeaturedLocations();
+        Set<LocationCountryResponse> featuredLocations = this.locationService.getFeaturedLocations();
         return ResponseEntity.ok(featuredLocations);
-
     }
 
-    @GetMapping("country/{countryId}")
+    @GetMapping("/country/{countryId}")
     public ResponseEntity<List<LocationCountryResponse>> getLocationsByCountryId(@PathVariable Long countryId) {
-        try {
-            List<LocationCountryResponse> locationResponses = this.locationService.getLocationsByCountryId(countryId);
-            return ResponseEntity.ok(locationResponses);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return countryRepository.findById(countryId)
+                .map(country -> {
+                    List<LocationCountryResponse> locationCountryResponses =
+                            locationRepository.findByCountryName(country.getName())
+                                    .stream()
+                                    .map(LocationCountryResponse::new)
+                                    .collect(Collectors.toList());
+                    return ResponseEntity.ok(locationCountryResponses);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }
