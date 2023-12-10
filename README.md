@@ -22,16 +22,26 @@ PostgreSQL (:5432) + pgAdmin (:5050)
 ```yaml
 version: "3.8"
 services:
-  db:
-    container_name: postgres
+  prod-db:
+    container_name: prod-db
     image: postgres
     restart: always
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: root
-      POSTGRES_MULTIPLE_DATABASES: wintersport_db, test_wintersport_db
+      POSTGRES_DB: wintersport_db
     ports:
       - "5432:5432"
+  test-db:
+    container_name: test-db
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: test_wintersport_db
+    ports:
+      - "5433:5432"
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
@@ -41,5 +51,4 @@ services:
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
       - "5050:80"
-
 ```
