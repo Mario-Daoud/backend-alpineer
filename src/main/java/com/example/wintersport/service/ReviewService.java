@@ -12,7 +12,6 @@ import com.example.wintersport.response.ReviewLocationUserResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Service
 public class ReviewService {

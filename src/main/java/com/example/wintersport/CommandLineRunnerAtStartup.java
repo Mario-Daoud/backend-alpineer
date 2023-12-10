@@ -2,14 +2,11 @@ package com.example.wintersport;
 
 import com.example.wintersport.domain.*;
 import com.example.wintersport.repository.*;
-import com.example.wintersport.response.CountryLocationsResponse;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Component
 public class CommandLineRunnerAtStartup implements CommandLineRunner {

@@ -9,7 +9,6 @@ import com.example.wintersport.response.ReviewLocationUserResponse;
 import com.example.wintersport.response.ReviewResponse;
 import com.example.wintersport.response.ReviewUserResponse;
 import com.example.wintersport.service.ReviewService;
-import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
