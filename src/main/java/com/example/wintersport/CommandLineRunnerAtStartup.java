@@ -16,19 +16,16 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
 
     private CountryRepository countryRepository;
     private LocationRepository locationRepository;
-    private SportRepository sportRepository;
     private UserRepository userRepository;
     private ReviewRepository reviewRepository;
     private BCryptPasswordEncoder passwordEncoder;
 
     public CommandLineRunnerAtStartup(CountryRepository countryRepository,
                                       LocationRepository locationRepository,
-                                      SportRepository sportRepository,
                                       UserRepository userRepository,
                                       ReviewRepository reviewRepository) {
         this.countryRepository = countryRepository;
         this.locationRepository = locationRepository;
-        this.sportRepository = sportRepository;
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
@@ -179,70 +176,6 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
             locationRepository.save(l11);
         }
 
-        if (sportRepository.findAll().isEmpty()) {
-            Sport s1 = new Sport();
-            s1.setName("Snowboarding");
-            s1.setDescription("Description for Snowboarding");
-            s1.setDifficulty(3);
-            Set<Location> locations1 = new HashSet<>();
-            locationRepository.findByName("Dolomites").ifPresent(locations1::add);
-            s1.setLocations(locations1);
-            sportRepository.save(s1);
-
-            Sport s2 = new Sport();
-            s2.setName("Skiing");
-            s2.setDescription("Description for Skiing");
-            s2.setDifficulty(4);
-            Set<Location> locations2 = new HashSet<>();
-            locationRepository.findByName("Alps").ifPresent(locations2::add);
-            s2.setLocations(locations2);
-            sportRepository.save(s2);
-
-            Sport s3 = new Sport();
-            s3.setName("Freestyle Skiing");
-            s3.setDescription("Description for Freestyle Skiing");
-            s3.setDifficulty(3);
-            Set<Location> locations3 = new HashSet<>();
-            locationRepository.findByName("Courchevel").ifPresent(locations3::add);
-            s3.setLocations(locations3);
-            sportRepository.save(s3);
-
-            Sport s4 = new Sport();
-            s4.setName("Cross-Country Skiing");
-            s4.setDescription("Description for Cross-Country Skiing");
-            s4.setDifficulty(2);
-            Set<Location> locations4 = new HashSet<>();
-            locationRepository.findByName("Oslo").ifPresent(locations4::add);
-            s4.setLocations(locations4);
-            sportRepository.save(s4);
-
-            Sport s5 = new Sport();
-            s5.setName("Snowmobiling");
-            s5.setDescription("Description for Snowmobiling");
-            s5.setDifficulty(1);
-            Set<Location> locations5 = new HashSet<>();
-            locationRepository.findByName("Garmisch-Partenkirchen").ifPresent(locations5::add);
-            s5.setLocations(locations5);
-            sportRepository.save(s5);
-
-            Sport s6 = new Sport();
-            s6.setName("Ice Climbing");
-            s6.setDescription("Description for Ice Climbing");
-            s6.setDifficulty(4);
-            Set<Location> locations6 = new HashSet<>();
-            locationRepository.findByName("Banff").ifPresent(locations6::add);
-            s6.setLocations(locations6);
-            sportRepository.save(s6);
-
-            Sport s7 = new Sport();
-            s7.setName("Snowshoeing");
-            s7.setDescription("Description for Snowshoeing");
-            s7.setDifficulty(2);
-            Set<Location> locations7 = new HashSet<>();
-            locationRepository.findByName("Aspen").ifPresent(locations7::add);
-            s7.setLocations(locations7);
-            sportRepository.save(s7);
-        }
 
         if (userRepository.findByUsername("username").isEmpty()) {
             User u1 = new User();

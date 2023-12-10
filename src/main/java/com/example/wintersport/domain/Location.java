@@ -33,8 +33,6 @@ public class Location {
     @JoinColumn(name = "country_id")
     @NotNull
     private Country country;
-    @ManyToMany(mappedBy = "locations", fetch = FetchType.LAZY)
-    private Set<Sport> sports;
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Review> reviews;
 
@@ -49,7 +47,6 @@ public class Location {
         this.trackLength = trackLength;
         this.chairlifts = chairlifts;
         this.country = country;
-        this.sports = new HashSet<>();
         this.reviews = new HashSet<>();
     }
 
@@ -75,14 +72,6 @@ public class Location {
 
     public void setCountry(Country country) {
         this.country = country;
-    }
-
-    public Set<Sport> getSports() {
-        return sports;
-    }
-
-    public void setSports(Set<Sport> sports) {
-        this.sports = sports;
     }
 
     public Set<Review> getReviews() {
