@@ -29,9 +29,12 @@ public class UserController {
     @PostMapping("login")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> login(@RequestBody @Valid UserRequest userRequest) {
-        return userRepository.findByUsername(userRequest.getUsername())
-                .map(user -> ResponseEntity.ok().build())
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access"));
+        if (userService.loginUser(userRequest)) {
+            System.out.println("User logged in");
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @PostMapping("register")

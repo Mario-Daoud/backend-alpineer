@@ -18,7 +18,7 @@ public class UserService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    public boolean LoginUser(UserRequest userRequest) {
+    public boolean loginUser(UserRequest userRequest) {
         Optional<User> user = userRepository.findByUsername(userRequest.getUsername());
         if (user.isPresent() && passwordEncoder.matches(userRequest.getPassword(), user.get().getPassword())) {
             return true;

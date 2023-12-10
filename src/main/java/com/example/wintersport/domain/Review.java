@@ -15,9 +15,6 @@ public class Review {
     @Max(5)
     @Min(1)
     private int rating;
-    @PastOrPresent
-    @NotNull
-    private LocalDate date;
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private User user;
@@ -30,7 +27,6 @@ public class Review {
 
     public Review(int rating, User user, Location location) {
         this.rating = rating;
-        this.date = LocalDate.now();
         this.user = user;
         this.location = location;
     }
@@ -49,10 +45,6 @@ public class Review {
 
     public void setRating(int rating) {
         this.rating = rating;
-    }
-
-    public LocalDate getDate() {
-        return date;
     }
 
     public User getUser() {

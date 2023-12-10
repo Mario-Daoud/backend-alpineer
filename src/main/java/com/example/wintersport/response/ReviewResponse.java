@@ -7,12 +7,10 @@ import java.time.LocalDate;
 public class ReviewResponse {
     private Long id;
     private int rating;
-    private LocalDate date;
 
     public ReviewResponse(Review review) {
         this.id = review.getId();
         this.rating = review.getRating();
-        this.date = review.getDate();
     }
 
     public Long getId() {
@@ -23,7 +21,4 @@ public class ReviewResponse {
         return rating;
     }
 
-    public LocalDate getDate() {
-        return date;
-    }
 }
