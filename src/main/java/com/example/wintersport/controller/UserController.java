@@ -28,12 +28,10 @@ public class UserController {
 
     @PostMapping("login")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Void> login(@RequestBody @Valid UserRequest userRequest) {
-        Optional<User> user = userRepository.findByUsername(userRequest.getUsername());
-        if (user.isPresent() && userService.LoginUser(userRequest)) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<Object> login(@RequestBody @Valid UserRequest userRequest) {
+        return userRepository.findByUsername(userRequest.getUsername())
+                .map(user -> ResponseEntity.ok().build())
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access"));
     }
 
     @PostMapping("register")
@@ -55,12 +53,14 @@ public class UserController {
     }
 
     @PutMapping("{userId}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable(name = "userId") Long id, @RequestBody UserRequest user) {
-        Optional<User> existingUser = userRepository.findById(id);
-        if (existingUser.isPresent()) {
-            User updatedUser = userService.UpdateUser(existingUser.get(), user);
-            return ResponseEntity.ok(new UserResponse(updatedUser));
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<UserResponse> updateUser(@PathVariable(name = "userId") Long id, @RequestBody UserRequest userRequest) {
+        return userRepository.findById(id)
+                .map(userToUpdate -> {
+                    userToUpdate.setUsername(userRequest.getUsername());
+                    userToUpdate.setPassword(userRequest.getPassword());
+                    User updatedUser = userRepository.save(userToUpdate);
+                    return ResponseEntity.ok(new UserResponse(updatedUser));
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

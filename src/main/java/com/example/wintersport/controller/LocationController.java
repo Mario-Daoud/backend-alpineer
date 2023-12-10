@@ -39,8 +39,7 @@ public class LocationController {
 
     @GetMapping("/featured")
     public ResponseEntity<Set<LocationCountryResponse>> getFeaturedLocation() {
-        Set<LocationCountryResponse> featuredLocations = this.locationService.getFeaturedLocations();
-        return ResponseEntity.ok(featuredLocations);
+        return ResponseEntity.ok(locationService.getFeaturedLocations());
     }
 
     @GetMapping("/country/{countryId}")

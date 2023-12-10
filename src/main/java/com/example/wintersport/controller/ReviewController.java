@@ -41,15 +41,15 @@ public class ReviewController {
 
     @GetMapping("/location/{locationId}")
     public ResponseEntity<List<ReviewUserResponse>> getReviewsByLocationId(@PathVariable Long locationId) {
-        Optional<List<Review>> reviews = reviewRepository.findByLocationId(locationId);
-        return reviews.map(reviewsList -> ResponseEntity.ok(reviewsList.stream().map(ReviewUserResponse::new).toList()))
+        return reviewRepository.findByLocationId(locationId)
+                .map(reviews -> ResponseEntity.ok(reviews.stream().map(ReviewUserResponse::new).toList()))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ReviewLocationResponse>> getReviewsByUserId(@PathVariable Long userId) {
-        Optional<List<Review>> reviews = reviewRepository.findByUserId(userId);
-        return reviews.map(reviewsList -> ResponseEntity.ok(reviewsList.stream().map(ReviewLocationResponse::new).toList()))
+        return reviewRepository.findByUserId(userId)
+                .map(reviews -> ResponseEntity.ok(reviews.stream().map(ReviewLocationResponse::new).toList()))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
