@@ -46,7 +46,6 @@ public class UserControllerTest {
     }
 
     @Test
-    @WithAnonymousUser
     public void loginExisting() throws Exception {
         when(this.userRepository.findByUsername("test")).thenReturn(users.stream().findFirst());
         mockMvc.perform(post(baseUrl + "/login")
