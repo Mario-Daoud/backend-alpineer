@@ -4,20 +4,24 @@ import com.example.wintersport.domain.Location;
 import com.example.wintersport.repository.LocationRepository;
 import com.example.wintersport.response.LocationCountryResponse;
 import com.example.wintersport.response.LocationResponse;
+import com.example.wintersport.service.LocationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/location")
 @CrossOrigin
 public class LocationController {
     private final LocationRepository locationRepository;
+    private final LocationService locationService;
 
-    public LocationController(LocationRepository locationRepository) {
+    public LocationController(LocationRepository locationRepository, LocationService locationService) {
         this.locationRepository = locationRepository;
+        this.locationService = locationService;
     }
 
     @GetMapping
@@ -29,26 +33,9 @@ public class LocationController {
 
     @GetMapping("featured")
     public ResponseEntity<Set<LocationCountryResponse>> getFeaturedLocation() {
-        List<Location> locations = this.locationRepository.findAll();
-        Random random = new Random();
-        Set<LocationCountryResponse> uniqueFeaturedLocations = new HashSet<>();
+        Set<LocationCountryResponse> featuredLocations = this.locationService.fillFeaturedLocations();
+        return ResponseEntity.ok(featuredLocations);
 
-        int featuredLocationSize = 3;
-
-        while (uniqueFeaturedLocations.size() < featuredLocationSize) {
-            int randomNumber = random.nextInt(locations.size());
-            Location randomLocation = locations.get(randomNumber);
-
-            boolean nameExists = uniqueFeaturedLocations.stream()
-                    .anyMatch(locationResponse -> locationResponse.getName().equals(randomLocation.getName()));
-
-            if (!nameExists) {
-                uniqueFeaturedLocations.add(new LocationCountryResponse(randomLocation));
-            }
-
-        }
-
-        return ResponseEntity.ok(uniqueFeaturedLocations);
     }
 
     @GetMapping("country/{countryName}")

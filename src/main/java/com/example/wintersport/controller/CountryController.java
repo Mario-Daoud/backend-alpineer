@@ -7,6 +7,7 @@ import com.example.wintersport.request.CountryRequest;
 import com.example.wintersport.response.CountryLocationsResponse;
 import com.example.wintersport.response.CountryResponse;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,13 @@ public class CountryController {
 
     @GetMapping("{id}")
     public ResponseEntity<CountryResponse> getCountryById(@PathVariable Long id) {
-        return this.countryRepository.findById(id).map(CountryResponse::new).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        Optional<Country> country = this.countryRepository.findById(id);
+        if (country.isPresent()) {
+            CountryResponse countryResponse = new CountryResponse(country.get());
+            return ResponseEntity.ok(countryResponse);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
@@ -47,7 +54,7 @@ public class CountryController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        Country country =  new Country(countryRequest.getName());
+        Country country = new Country(countryRequest.getName());
         Country savedCountry = this.countryRepository.save(country);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -57,24 +64,31 @@ public class CountryController {
     }
 
     @PutMapping("{id}")
-    public CountryResponse updateCountry(@PathVariable Long id, @Valid @RequestBody CountryRequest countryRequest) {
-        Country country = this.countryRepository.findById(id).orElseThrow();
-
-        if (countryRequest.getName() != null) {
-            country.setName(countryRequest.getName());
+    public ResponseEntity<CountryResponse> updateCountry(@PathVariable Long id, @Valid @RequestBody CountryRequest countryRequest) {
+        Optional<Country> country = this.countryRepository.findById(id);
+        if (country.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
 
-        return new CountryResponse(this.countryRepository.save(country));
+        if (countryRequest.getName() != null) {
+            country.get().setName(countryRequest.getName());
+        }
+
+        Country savedCountry = this.countryRepository.save(country.get());
+        return ResponseEntity.ok(new CountryResponse(savedCountry));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteCountry(@PathVariable Long id) {
-        Country country = this.countryRepository.findById(id).orElseThrow();
-        try {
-            this.countryRepository.delete(country);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    public ResponseEntity<CountryResponse> deleteCountry(@PathVariable Long id) {
+        Optional<Country> country = this.countryRepository.findById(id);
+        if (country.isPresent()) {
+            try {
+                this.countryRepository.deleteById(id);
+                return ResponseEntity.ok(new CountryResponse(country.get()));
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
         }
+        return ResponseEntity.notFound().build();
     }
 }
