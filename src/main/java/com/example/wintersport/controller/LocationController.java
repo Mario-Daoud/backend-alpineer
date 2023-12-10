@@ -1,16 +1,14 @@
 package com.example.wintersport.controller;
 
 import com.example.wintersport.domain.Location;
+import com.example.wintersport.exception.ResourceNotFoundException;
 import com.example.wintersport.repository.LocationRepository;
 import com.example.wintersport.response.LocationCountryResponse;
-import com.example.wintersport.response.LocationResponse;
 import com.example.wintersport.service.LocationService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/location")
@@ -38,10 +36,15 @@ public class LocationController {
 
     }
 
-    @GetMapping("country/{countryName}")
-    public ResponseEntity<List<LocationCountryResponse>> getLocationsByCountry(@PathVariable String countryName) {
-        List<Location> locations = this.locationRepository.findByCountryName(countryName);
-        List<LocationCountryResponse> locationResponses = locations.stream().map(LocationCountryResponse::new).toList();
-        return ResponseEntity.ok(locationResponses);
+    @GetMapping("country/{countryId}")
+    public ResponseEntity<List<LocationCountryResponse>> getLocationsByCountryId(@PathVariable Long countryId) {
+        try {
+            List<LocationCountryResponse> locationResponses = this.locationService.getLocationsByCountryId(countryId);
+            return ResponseEntity.ok(locationResponses);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

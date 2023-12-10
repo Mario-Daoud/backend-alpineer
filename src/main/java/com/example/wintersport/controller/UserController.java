@@ -27,18 +27,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("username/{username}")
-    public ResponseEntity<UserResponse> getUserByUsername(@PathVariable String username) {
-        Optional<User> user = userRepository.findByUsername(username);
-        if (user.isPresent()) {
-            UserResponse userResponse = new UserResponse(user.get());
-            return ResponseEntity.ok(userResponse);
-        }
-        else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @PostMapping("login")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> login(@RequestBody @Valid UserRequest userRequest) {

@@ -1,9 +1,11 @@
 package com.example.wintersport.service;
 
+import com.example.wintersport.domain.Country;
 import com.example.wintersport.domain.Location;
+import com.example.wintersport.exception.ResourceNotFoundException;
+import com.example.wintersport.repository.CountryRepository;
 import com.example.wintersport.repository.LocationRepository;
 import com.example.wintersport.response.LocationCountryResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -14,9 +16,11 @@ import java.util.Set;
 @Service
 public class LocationService {
     private final LocationRepository locationRepository;
+    private final CountryRepository countryRepository;
 
-    public LocationService(LocationRepository locationRepository) {
+    public LocationService(LocationRepository locationRepository, CountryRepository countryRepository) {
         this.locationRepository = locationRepository;
+        this.countryRepository = countryRepository;
     }
 
     public Set<LocationCountryResponse> fillFeaturedLocations() {
@@ -40,8 +44,12 @@ public class LocationService {
         }
 
         return uniqueFeaturedLocations;
-
     }
 
-
+    public List<LocationCountryResponse> getLocationsByCountryId(Long countryId) {
+        Country country = this.countryRepository.findById(countryId).orElseThrow(() -> new ResourceNotFoundException("country"));
+        List<Location> locations = this.locationRepository.findByCountryName(country.getName());
+        List<LocationCountryResponse> locationResponses = locations.stream().map(LocationCountryResponse::new).toList();
+        return locationResponses;
+    }
 }
