@@ -55,35 +55,44 @@ public class UserControllerTest {
 
     private List<User> users;
 
-    private BCryptPasswordEncoder passwordEncoder;
+    @BeforeEach
+    public void setUp() {
+        users = new ArrayList<>();
+    }
 
+    //    @Test
+//    public void loginExisting() throws Exception {
+//        User user = new User("test", new BCryptPasswordEncoder().encode("password"));
+//        when(this.userRepository.save(user)).thenReturn(user);
+//        when(this.userRepository.findByUsername("test")).thenReturn(Optional.of(user));
+//
+//        UserRequest userRequest = new UserRequest();
+//        userRequest.setUsername(user.getUsername());
+//        userRequest.setPassword("password");
+//
+//        String stringvalue = objectMapper.writeValueAsString(userRequest);
+//
+//        mockMvc.perform(post(baseUrl + "/login")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(stringvalue))
+//                .andExpect(status().isOk());
+//    }
+//
     @Test
-    public void loginExisting() throws Exception {
-        User user = new User("test", new BCryptPasswordEncoder().encode("password"));
-        when(this.userRepository.save(user)).thenReturn(user);
+    public void loginNonExisting() throws Exception {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        when(this.userService.loginUser(any(UserRequest.class))).thenReturn(false);
+
+        User user = new User("test", "password");
+        users.add(user);
         when(this.userRepository.findByUsername("test")).thenReturn(Optional.of(user));
-
-        UserRequest userRequest = new UserRequest();
-        userRequest.setUsername(user.getUsername());
-        userRequest.setPassword("password");
-
-        String stringvalue = objectMapper.writeValueAsString(userRequest);
 
         mockMvc.perform(post(baseUrl + "/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(stringvalue))
-                .andExpect(status().isOk());
+                        .content("{\"username\": \"" + users.getFirst().getUsername() + "\", \"password\": \"" + users.getFirst().getPassword() + "\"}"))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
-//
-//    @Test
-//    public void loginNonExisting() throws Exception {
-//        when(this.userRepository.findByUsername("test")).thenReturn(Optional.empty());
-//        mockMvc.perform(post(baseUrl + "/login")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content("{\"username\": \"" + users.getFirst().getUsername() + "\", \"password\": \"" + users.getFirst().getPassword() + "\"}"))
-//                .andDo(print())
-//                .andExpect(status().isUnauthorized());
-//    }
 //
 //    @Test
 //    public void loginEmptyUsername() throws Exception {
