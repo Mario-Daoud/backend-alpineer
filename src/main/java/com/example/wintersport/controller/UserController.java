@@ -8,6 +8,8 @@ import com.example.wintersport.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -29,11 +31,12 @@ public class UserController {
     @PostMapping("login")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> login(@RequestBody @Valid UserRequest userRequest) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        System.out.println(passwordEncoder.encode(userRequest.getPassword()));
         if (userService.loginUser(userRequest)) {
-            System.out.println("User logged in");
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
     }
 
