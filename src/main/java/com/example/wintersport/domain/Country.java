@@ -37,7 +37,7 @@ public class Country {
     }
 
     public void setName(String name) {
-        this.name = name.toLowerCase().trim();
+        this.name = name.trim();
     }
 
     public Set<Location> getLocations() {

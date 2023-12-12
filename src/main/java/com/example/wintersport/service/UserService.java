@@ -26,7 +26,7 @@ public class UserService {
         return false;
     }
 
-    public User RegisterUser(UserRequest userRequest) {
+    public User registerUser(UserRequest userRequest) {
         User user = new User();
         user.setUsername(userRequest.getUsername());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
@@ -34,13 +34,4 @@ public class UserService {
         User savedUser = userRepository.save(user);
         return savedUser;
     }
-
-    public User UpdateUser(User userToBeUpdated, UserRequest updatedUser) {
-        userToBeUpdated.setUsername(updatedUser.getUsername());
-        userToBeUpdated.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-
-        User savedUser = userRepository.save(userToBeUpdated);
-        return savedUser;
-    }
-
 }

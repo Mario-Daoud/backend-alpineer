@@ -41,7 +41,7 @@ public class User {
     }
 
     public void setUsername(String username) {
-        this.username = username.toLowerCase().trim();
+        this.username = username.trim();
     }
 
     public String getPassword() {

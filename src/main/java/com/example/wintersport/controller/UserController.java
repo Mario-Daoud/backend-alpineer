@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -48,7 +47,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        User savedUser = userService.RegisterUser(userRequest);
+        User savedUser = userService.registerUser(userRequest);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -60,13 +59,29 @@ public class UserController {
 
     @PutMapping("{userId}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable(name = "userId") Long id, @RequestBody UserRequest userRequest) {
-        return userRepository.findById(id)
-                .map(userToUpdate -> {
-                    userToUpdate.setUsername(userRequest.getUsername());
-                    userToUpdate.setPassword(userRequest.getPassword());
-                    User updatedUser = userRepository.save(userToUpdate);
-                    return ResponseEntity.ok(new UserResponse(updatedUser));
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        if (userRequest.getPassword().isBlank() && userRequest.getUsername().isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Optional<User> existingUser = userRepository.findById(id);
+        if (existingUser.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        User userToUpdate = existingUser.get();
+        if (userRequest.getPassword().isBlank()) {
+            userToUpdate.setUsername(userToUpdate.getUsername());
+        } else {
+            userToUpdate.setUsername(userRequest.getUsername());
+        }
+
+        if (userRequest.getUsername().isBlank()) {
+            userToUpdate.setPassword(userToUpdate.getPassword());
+        } else {
+            userToUpdate.setPassword(userRequest.getPassword());
+        }
+
+        User updatedUser = userRepository.save(userToUpdate);
+        return ResponseEntity.ok(new UserResponse(updatedUser));
     }
 }

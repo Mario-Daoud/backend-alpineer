@@ -1,6 +1,5 @@
 package com.example.wintersport.controller;
 
-import com.example.wintersport.domain.Review;
 import com.example.wintersport.repository.ReviewRepository;
 import com.example.wintersport.request.ReviewRequest;
 import com.example.wintersport.response.ReviewLocationResponse;
@@ -16,7 +15,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/review")
@@ -54,9 +52,9 @@ public class ReviewController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReviewResponse> getReviewById(@PathVariable Long id) {
+    public ResponseEntity<ReviewLocationUserResponse> getReviewById(@PathVariable Long id) {
         return reviewRepository.findById(id)
-                .map(review -> ResponseEntity.ok(new ReviewResponse(review)))
+                .map(review -> ResponseEntity.ok(new ReviewLocationUserResponse(review)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 

@@ -8,6 +8,7 @@ import com.example.wintersport.repository.ReviewRepository;
 import com.example.wintersport.repository.UserRepository;
 import com.example.wintersport.request.ReviewRequest;
 import com.example.wintersport.response.ReviewLocationUserResponse;
+import com.example.wintersport.response.ReviewResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,7 +25,7 @@ public class ReviewService {
         this.locationrepository = locationrepository;
     }
 
-    public ReviewLocationUserResponse addReview(Long userId, Long locationId, ReviewRequest reviewRequest) {
+    public ReviewResponse addReview(Long userId, Long locationId, ReviewRequest reviewRequest) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("This user does not exist"));
         Location location = locationrepository.findById(locationId).orElseThrow(() -> new RuntimeException("This location does not exist"));
 
@@ -33,6 +34,6 @@ public class ReviewService {
         review.setUser(user);
         review.setLocation(location);
         reviewRepository.save(review);
-        return new ReviewLocationUserResponse(review);
+        return new ReviewResponse(review);
     }
 }
