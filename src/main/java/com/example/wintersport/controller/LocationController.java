@@ -42,9 +42,9 @@ public class LocationController {
         return ResponseEntity.ok(locationService.getFeaturedLocations());
     }
 
-    @GetMapping("/country/{countryId}")
-    public ResponseEntity<List<LocationCountryResponse>> getLocationsByCountryId(@PathVariable Long countryId) {
-        return countryRepository.findById(countryId)
+    @GetMapping("/country/{countryName}")
+    public ResponseEntity<List<LocationCountryResponse>> getLocationsByCountryId(@PathVariable String countryName) {
+        return countryRepository.findByName(countryName)
                 .map(country -> {
                     List<LocationCountryResponse> locationCountryResponses =
                             locationRepository.findByCountryName(country.getName())
