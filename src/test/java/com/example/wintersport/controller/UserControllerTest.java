@@ -4,6 +4,7 @@ import com.example.wintersport.domain.User;
 import com.example.wintersport.repository.UserRepository;
 import com.example.wintersport.request.UserRequest;
 import com.example.wintersport.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -17,11 +18,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -31,83 +29,76 @@ import static org.mockito.Mockito.*;
 @WebMvcTest(UserController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
+
     private final String baseUrl = "/api/user";
+
     @MockBean
     private UserRepository userRepository;
+
     @MockBean
     private UserService userService;
 
     @Autowired
     private ObjectMapper objectMapper;
+
     @Autowired
     private MockMvc mockMvc;
 
-    private List<User> users;
+    private User user;
 
     @BeforeEach
     void setUp() {
-        users = new ArrayList<>();
+        user = createUser();
     }
 
     @Test
     void loginExisting() throws Exception {
-        User user = new User("test", new BCryptPasswordEncoder().encode("password"));
-
-        when(this.userRepository.findByUsername("test")).thenReturn(Optional.of(user));
-        when(this.userService.loginUser(any(UserRequest.class))).thenReturn(true);
-
-        UserRequest userRequest = new UserRequest();
-        userRequest.setUsername(user.getUsername());
-        userRequest.setPassword("password");
-
-        String stringvalue = objectMapper.writeValueAsString(userRequest);
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
+        when(userService.loginUser(any(UserRequest.class))).thenReturn(true);
 
         mockMvc.perform(post(baseUrl + "/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(stringvalue))
+                        .content(createUserRequest("test")))
                 .andExpect(status().isOk());
     }
 
     @Test
     void loginUnauthorized() throws Exception {
-        when(this.userService.loginUser(any(UserRequest.class))).thenReturn(false);
+        when(userService.loginUser(any(UserRequest.class))).thenReturn(false);
 
-        User user = new User("test", "password");
-        users.add(user);
-        when(this.userRepository.findByUsername("test")).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.empty());
+
+        mockMvc.perform(post(baseUrl + "/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(createUserRequest("unauthorized")))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+
+    @Test
+    void loginEmptyUsername() throws Exception {
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
+        when(userService.loginUser(any(UserRequest.class))).thenReturn(true);
 
         UserRequest userRequest = new UserRequest();
-        userRequest.setUsername("unauthorized");
         userRequest.setPassword(user.getPassword());
 
         mockMvc.perform(post(baseUrl + "/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void loginEmptyUsername() throws Exception {
-        users.add(new User("test", "test"));
-        when(this.userRepository.findByUsername("test")).thenReturn(users.stream().findFirst());
-        UserRequest userRequest = new UserRequest();
-        userRequest.setPassword("test");
-
-        mockMvc.perform(post(baseUrl + "/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userRequest)))
-                .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        verifyNoInteractions(this.userRepository);
+        verifyNoInteractions(userRepository);
     }
 
     @Test
     void loginEmptyPassword() throws Exception {
-        when(this.userRepository.findByUsername("test")).thenReturn(users.stream().findFirst());
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
+        when(userService.loginUser(any(UserRequest.class))).thenReturn(true);
         UserRequest userRequest = new UserRequest();
-        userRequest.setUsername("test");
+        userRequest.setUsername(user.getUsername());
 
         mockMvc.perform(post(baseUrl + "/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -115,27 +106,25 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        verifyNoInteractions(this.userRepository);
+        verifyNoInteractions(userRepository);
     }
 
     @Test
     void loginEmptyUsernameAndPassword() throws Exception {
-        when(this.userRepository.findByUsername("test")).thenReturn(users.stream().findFirst());
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
+        when(userService.loginUser(any(UserRequest.class))).thenReturn(true);
         mockMvc.perform(post(baseUrl + "/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new UserRequest())))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        verifyNoInteractions(this.userRepository);
+        verifyNoInteractions(userRepository);
     }
 
     @Test
     void registerExisting() throws Exception {
-        User user = new User("test", "test");
-        user.setId(1L);
-
-        when(userRepository.findByUsername("test")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
 
         UserRequest userRequest = new UserRequest();
         userRequest.setUsername(user.getUsername());
@@ -151,10 +140,7 @@ class UserControllerTest {
 
     @Test
     void registerNonExisting() throws Exception {
-        User user = new User("newuser", "password");
-        user.setId(1L);
-
-        when(userRepository.findByUsername("newuser")).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.empty());
 
         when(userService.registerUser(any(UserRequest.class))).thenReturn(user);
 
@@ -168,29 +154,30 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", equalTo(1)))
-                .andExpect(jsonPath("$.username", equalTo("newuser")))
-                .andExpect(jsonPath("$.password", equalTo("password")));
+                .andExpect(jsonPath("$.username", equalTo(user.getUsername())))
+                .andExpect(jsonPath("$.password", equalTo(user.getPassword())));
     }
 
     @Test
     void registerEmptyUsername() throws Exception {
-        when(this.userRepository.findByUsername("test")).thenReturn(users.stream().findFirst());
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         UserRequest userRequest = new UserRequest();
-        userRequest.setPassword("test");
+        userRequest.setPassword(user.getPassword());
+
         mockMvc.perform(post(baseUrl + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        verifyNoInteractions(this.userRepository);
+        verifyNoInteractions(userRepository);
     }
 
     @Test
     void registerEmptyPassword() throws Exception {
-        when(this.userRepository.findByUsername("test")).thenReturn(users.stream().findFirst());
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         UserRequest userRequest = new UserRequest();
-        userRequest.setUsername("test");
+        userRequest.setUsername(user.getUsername());
 
         mockMvc.perform(post(baseUrl + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -198,45 +185,42 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        verifyNoInteractions(this.userRepository);
+        verifyNoInteractions(userRepository);
     }
 
     @Test
     void registerEmptyUsernameAndPassword() throws Exception {
-        when(this.userRepository.findByUsername("test")).thenReturn(users.stream().findFirst());
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         mockMvc.perform(post(baseUrl + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new UserRequest())))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        verifyNoInteractions(this.userRepository);
+        verifyNoInteractions(userRepository);
     }
 
     @Test
     void updateUserExisting() throws Exception {
-        User user = new User("test", "test");
-        user.setId(1L);
-
-        when(this.userRepository.save(user)).thenReturn(user);
-        when(this.userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.save(user)).thenReturn(user);
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         UserRequest userRequest = new UserRequest();
         userRequest.setUsername("test2");
         userRequest.setPassword("test2");
-        mockMvc.perform(put(baseUrl + "/1")
+        mockMvc.perform(put(baseUrl + "/" + user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(1)))
-                .andExpect(jsonPath("$.username", equalTo("test2")))
-                .andExpect(jsonPath("$.password", equalTo("test2")));
+                .andExpect(jsonPath("$.username", equalTo(userRequest.getUsername())))
+                .andExpect(jsonPath("$.password", equalTo(userRequest.getPassword())));
     }
 
     @Test
     void updateUserNonExisting() throws Exception {
-        when(this.userRepository.findByUsername("nonexistent")).thenReturn(Optional.empty());
+        when(userRepository.findByUsername("nonexistent")).thenReturn(Optional.empty());
         UserRequest userRequest = new UserRequest();
         userRequest.setUsername("nonexistent");
         userRequest.setPassword("nonexistent");
@@ -250,67 +234,80 @@ class UserControllerTest {
 
     @Test
     void updateUserEmptyUsername() throws Exception {
-        User user = new User("test", "test");
-        user.setId(1L);
-
-        when(this.userRepository.save(user)).thenReturn(user);
-        when(this.userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         UserRequest userRequest = new UserRequest();
         userRequest.setUsername("");
-        userRequest.setPassword("test");
+        userRequest.setPassword("newpassword");
 
-        mockMvc.perform(put(baseUrl + "/1")
+        when(userRepository.save(user)).thenReturn(user);
+
+        mockMvc.perform(put(baseUrl + "/" + user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.username", equalTo(user.getUsername())))
+                .andExpect(jsonPath("$.password", equalTo(userRequest.getPassword())));
     }
 
     @Test
     void updateUserEmptyPassword() throws Exception {
-        User user = new User("test", "test");
-        user.setId(1L);
-
-        when(this.userRepository.save(user)).thenReturn(user);
-        when(this.userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.save(user)).thenReturn(user);
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         UserRequest userRequest = new UserRequest();
         userRequest.setUsername("test");
         userRequest.setPassword("");
 
-        mockMvc.perform(put(baseUrl + "/1")
+        mockMvc.perform(put(baseUrl + "/" + user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.username", equalTo(userRequest.getUsername())))
+                .andExpect(jsonPath("$.password", equalTo(user.getPassword())));
     }
 
     @Test
     void updateUserEmptyUsernameAndPassword() throws Exception {
-        User user = new User("test", "test");
-        user.setId(1L);
+        when(userRepository.save(user)).thenReturn(user);
 
-        when(this.userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
-        mockMvc.perform(put(baseUrl + "/1")
+        mockMvc.perform(put(baseUrl + "/" + user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new UserRequest())))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        verifyNoInteractions(this.userRepository);
+        verifyNoInteractions(userRepository);
     }
 
     @Test
     void updateUserEmptyBody() throws Exception {
-        when(this.userRepository.findById(1L)).thenReturn(users.stream().findFirst());
-        mockMvc.perform(put(baseUrl + "/1")
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        mockMvc.perform(put(baseUrl + "/" + user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(""))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        verifyNoInteractions(this.userRepository);
+        verifyNoInteractions(userRepository);
+    }
+
+    private User createUser() {
+        User user = new User("test", "password");
+        user.setId(1L);
+        return user;
+    }
+
+    private String createUserRequest(String username) throws JsonProcessingException {
+        UserRequest userRequest = new UserRequest();
+        userRequest.setUsername(username);
+        userRequest.setPassword("password");
+        return objectMapper.writeValueAsString(userRequest);
     }
 }

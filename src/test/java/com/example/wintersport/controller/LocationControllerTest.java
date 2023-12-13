@@ -6,7 +6,6 @@ import com.example.wintersport.repository.CountryRepository;
 import com.example.wintersport.repository.LocationRepository;
 import com.example.wintersport.response.LocationCountryResponse;
 import com.example.wintersport.service.LocationService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,7 +26,9 @@ import static org.mockito.Mockito.when;
 @WebMvcTest(LocationController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class LocationControllerTest {
+
     private final String baseUrl = "/api/location";
+
     @MockBean
     private LocationRepository locationRepository;
 
@@ -40,52 +41,29 @@ class LocationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private List<Country> countries;
-    private List<Location> locations;
-
-    @BeforeEach
-    void setUp() {
-        countries = new ArrayList<>();
-        locations = new ArrayList<>();
-    }
-
     @Test
     void getAllLocationsWithCountriesNonExisting() throws Exception {
-        when(locationRepository.findAll()).thenReturn(locations);
+        when(locationRepository.findAll()).thenReturn(new ArrayList<>());
 
         mockMvc.perform(get(baseUrl))
                 .andDo(print())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isEmpty());
     }
 
     @Test
     void getAllLocationsWithCountriesExisting() throws Exception {
-        Country country = new Country();
-        country.setId(1L);
-        country.setName("test");
+        Country country = createCountry();
+        Location location = createLocation(country);
 
-        Location location = new Location();
-        location.setName("test");
-        location.setChairlifts(1);
-        location.setDegrees(1);
-        location.setDescription("test");
-        location.setSnowHeight(100);
-        location.setTrackLength(100);
-        location.setId(1L);
-        location.setCountry(country);
-
-        locations.add(location);
-        countries.add(country);
-
-        when(countryRepository.findAll()).thenReturn(countries);
-        when(locationRepository.findAll()).thenReturn(locations);
+        when(countryRepository.findAll()).thenReturn(List.of(country));
+        when(locationRepository.findAll()).thenReturn(List.of(location));
 
         mockMvc.perform(get(baseUrl))
                 .andDo(print())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].name").value("test"))
                 .andExpect(jsonPath("$[0].country").value("test"));
     }
@@ -96,38 +74,25 @@ class LocationControllerTest {
 
         mockMvc.perform(get(baseUrl + "/featured"))
                 .andDo(print())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isEmpty());
     }
 
     @Test
     void getFeaturedLocationExisting() throws Exception {
         Set<LocationCountryResponse> featuredLocations = new HashSet<>();
-        Country country = new Country();
-        country.setId(1L);
-        country.setName("test");
+        Country country = createCountry();
+        Location location = createLocation(country);
 
-        Location location = new Location();
-        location.setName("test");
-        location.setChairlifts(1);
-        location.setDegrees(1);
-        location.setDescription("test");
-        location.setSnowHeight(100);
-        location.setTrackLength(100);
-        location.setId(1L);
-        location.setCountry(country);
-
-        locations.add(location);
-        countries.add(country);
         featuredLocations.add(new LocationCountryResponse(location));
 
         when(locationService.getFeaturedLocations()).thenReturn(featuredLocations);
 
         mockMvc.perform(get(baseUrl + "/featured"))
                 .andDo(print())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].name").value("test"))
                 .andExpect(jsonPath("$[0].country").value("test"));
     }
@@ -141,49 +106,27 @@ class LocationControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-
     @Test
     void getLocationsByCountryIdExisting() throws Exception {
-        Country country = new Country();
-        country.setId(1L);
-        country.setName("test");
-
-        Location location = new Location();
-        location.setName("test");
-        location.setChairlifts(1);
-        location.setDegrees(1);
-        location.setDescription("test");
-        location.setSnowHeight(100);
-        location.setTrackLength(100);
-        location.setId(1L);
-
-        location.setCountry(country);
+        Country country = createCountry();
+        Location location = createLocation(country);
 
         country.setLocations(Set.of(location));
 
-        locations.add(location);
-        countries.add(country);
-
         when(countryRepository.findById(1L)).thenReturn(Optional.of(country));
-        when(locationRepository.findByCountryName("test")).thenReturn(locations);
+        when(locationRepository.findByCountryName("test")).thenReturn(List.of(location));
 
         mockMvc.perform(get(baseUrl + "/country/1"))
                 .andDo(print())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
-
 
     @Test
     void getLocationsByCountryIdExistingNoLocations() throws Exception {
-        Country country = new Country();
-        country.setId(1L);
-        country.setName("test");
+        Country country = createCountry();
 
-        locations.add(new Location());
-        countries.add(country);
-
-        when(countryRepository.findById(1L)).thenReturn(java.util.Optional.of(country));
+        when(countryRepository.findById(1L)).thenReturn(Optional.of(country));
         when(locationRepository.findByCountryName("test")).thenReturn(new ArrayList<>());
 
         mockMvc.perform(get(baseUrl + "/country/1"))
@@ -191,7 +134,6 @@ class LocationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isEmpty());
     }
-
 
     @Test
     void getLocationsByCountryIdExistingNoCountry() throws Exception {
@@ -203,4 +145,23 @@ class LocationControllerTest {
                 .andExpect(content().string(""));
     }
 
+    private Country createCountry() {
+        Country country = new Country();
+        country.setId(1L);
+        country.setName("test");
+        return country;
+    }
+
+    private Location createLocation(Country country) {
+        Location location = new Location();
+        location.setId(1L);
+        location.setName("test");
+        location.setChairlifts(1);
+        location.setDegrees(1);
+        location.setDescription("test");
+        location.setSnowHeight(100);
+        location.setTrackLength(100);
+        location.setCountry(country);
+        return location;
+    }
 }

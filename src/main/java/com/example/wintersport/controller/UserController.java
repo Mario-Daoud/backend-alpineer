@@ -69,17 +69,13 @@ public class UserController {
         }
 
         User userToUpdate = existingUser.get();
-        if (userRequest.getPassword().isBlank()) {
-            userToUpdate.setUsername(userToUpdate.getUsername());
-        } else {
+        if (!userRequest.getPassword().isBlank()) {
+            userToUpdate.setPassword(userRequest.getPassword());
+        }
+        if (!userRequest.getUsername().isBlank()) {
             userToUpdate.setUsername(userRequest.getUsername());
         }
 
-        if (userRequest.getUsername().isBlank()) {
-            userToUpdate.setPassword(userToUpdate.getPassword());
-        } else {
-            userToUpdate.setPassword(userRequest.getPassword());
-        }
 
         User updatedUser = userRepository.save(userToUpdate);
         return ResponseEntity.ok(new UserResponse(updatedUser));

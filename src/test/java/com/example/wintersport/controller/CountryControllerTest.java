@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -21,7 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(CountryController.class)
 @AutoConfigureMockMvc(addFilters = false)
 public class CountryControllerTest {
+
     private final String baseUrl = "/api/country";
+
     @MockBean
     private CountryRepository countryRepository;
 
@@ -29,32 +32,34 @@ public class CountryControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void getAllCountriesExisting() throws Exception {
-        List<Country> countries = new ArrayList<>();
+    public void testGetAllCountriesExisting() throws Exception {
+        List<Country> countries = List.of(
+                new Country("Netherlands"),
+                new Country("Germany"),
+                new Country("France")
+        );
 
-        countries.add(new Country("Netherlands"));
-        countries.add(new Country("Germany"));
-        countries.add(new Country("France"));
-
-        when(this.countryRepository.findAll()).thenReturn(countries);
+        when(countryRepository.findAll()).thenReturn(countries);
 
         mockMvc.perform(get(baseUrl))
                 .andDo(print())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].name").value("Netherlands"))
                 .andExpect(jsonPath("$[1].name").value("Germany"))
                 .andExpect(jsonPath("$[2].name").value("France"));
     }
 
     @Test
-    public void getAllCountriesNonExisting() throws Exception {
-        when(this.countryRepository.findAll()).thenReturn(new ArrayList<>());
+    public void testGetAllCountriesNonExisting() throws Exception {
+        when(countryRepository.findAll()).thenReturn(new ArrayList<>());
 
         mockMvc.perform(get(baseUrl))
                 .andDo(print())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isEmpty());
     }
 }
+
