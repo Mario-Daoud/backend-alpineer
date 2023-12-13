@@ -1,54 +1,11 @@
 # eindopdracht2023-Mario-Daoud
 Wintersport API
 
-## Database 
-![db-diagram](https://github.com/vives-backendprogramming/eindopdracht2023-Mario-Daoud/assets/113902874/f7a785bb-bbbf-4da7-82f8-feb92abe4fec)
-
 #### Country
 Deze tabel bevat alle landen. Een land kan meerdere locaties hebben.
 #### Location
-Deze tabel bevat alle locaties waar er gesport kan worden. Een locatie is altijd verbonden aan 1 land. 
-#### Sport
-Deze tabel bevat alle sporten.
-#### LocationSport
-Deze tabel linkt locaties en sporten. Locaties kunnen namelijk meerdere sporten hebben en sporten kunnen in meerdere locaties gedaan worden.
+Deze tabel bevat alle locaties waar er gesport kan worden. Een location is altijd verbonden aan 1 country. 
 #### Review
-Deze tabel bevat alle reviews. Een review is altijd verbonden aan 1 user en aan 1 locatie.
+Deze tabel bevat alle reviews. Een review is altijd verbonden aan 1 user en aan 1 location.
 #### User
 Deze tabel bevat alle gebruikers.
-
-## Docker compose file
-PostgreSQL (:5432) + pgAdmin (:5050)
-```yaml
-version: "3.8"
-services:
-  prod-db:
-    container_name: prod-db
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: wintersport_db
-    ports:
-      - "5432:5432"
-  test-db:
-    container_name: test-db
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: test_wintersport_db
-    ports:
-      - "5433:5432"
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
-    ports:
-      - "5050:80"
-```
