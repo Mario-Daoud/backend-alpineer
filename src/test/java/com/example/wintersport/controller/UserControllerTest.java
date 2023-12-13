@@ -76,10 +76,13 @@ class UserControllerTest {
         users.add(user);
         when(this.userRepository.findByUsername("test")).thenReturn(Optional.empty());
 
+        UserRequest userRequest = new UserRequest();
+        userRequest.setUsername("unauthorized");
+        userRequest.setPassword(user.getPassword());
+
         mockMvc.perform(post(baseUrl + "/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"newuser\", \"password\": \"test"
-                                + users.getFirst().getPassword() + "\"}"))
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
@@ -88,9 +91,12 @@ class UserControllerTest {
     void loginEmptyUsername() throws Exception {
         users.add(new User("test", "test"));
         when(this.userRepository.findByUsername("test")).thenReturn(users.stream().findFirst());
+        UserRequest userRequest = new UserRequest();
+        userRequest.setPassword("test");
+
         mockMvc.perform(post(baseUrl + "/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"\", \"password\": \"test\"}"))
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
@@ -100,9 +106,12 @@ class UserControllerTest {
     @Test
     void loginEmptyPassword() throws Exception {
         when(this.userRepository.findByUsername("test")).thenReturn(users.stream().findFirst());
+        UserRequest userRequest = new UserRequest();
+        userRequest.setUsername("test");
+
         mockMvc.perform(post(baseUrl + "/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"test\", \"password\": \"\"}"))
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
@@ -114,7 +123,7 @@ class UserControllerTest {
         when(this.userRepository.findByUsername("test")).thenReturn(users.stream().findFirst());
         mockMvc.perform(post(baseUrl + "/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"\", \"password\": \"\"}"))
+                        .content(objectMapper.writeValueAsString(new UserRequest())))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
@@ -132,11 +141,10 @@ class UserControllerTest {
         userRequest.setUsername(user.getUsername());
         userRequest.setPassword(user.getPassword());
 
-        String stringvalue = objectMapper.writeValueAsString(userRequest);
 
         mockMvc.perform(post(baseUrl + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(stringvalue))
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
                 .andExpect(status().isConflict());
     }
@@ -154,11 +162,9 @@ class UserControllerTest {
         userRequest.setUsername(user.getUsername());
         userRequest.setPassword(user.getPassword());
 
-        String stringvalue = objectMapper.writeValueAsString(userRequest);
-
         mockMvc.perform(post(baseUrl + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(stringvalue))
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", equalTo(1)))
@@ -169,9 +175,11 @@ class UserControllerTest {
     @Test
     void registerEmptyUsername() throws Exception {
         when(this.userRepository.findByUsername("test")).thenReturn(users.stream().findFirst());
+        UserRequest userRequest = new UserRequest();
+        userRequest.setPassword("test");
         mockMvc.perform(post(baseUrl + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"\", \"password\": \"test\"}"))
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
@@ -181,9 +189,12 @@ class UserControllerTest {
     @Test
     void registerEmptyPassword() throws Exception {
         when(this.userRepository.findByUsername("test")).thenReturn(users.stream().findFirst());
+        UserRequest userRequest = new UserRequest();
+        userRequest.setUsername("test");
+
         mockMvc.perform(post(baseUrl + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"test\", \"password\": \"\"}"))
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
@@ -195,7 +206,7 @@ class UserControllerTest {
         when(this.userRepository.findByUsername("test")).thenReturn(users.stream().findFirst());
         mockMvc.perform(post(baseUrl + "/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"\", \"password\": \"\"}"))
+                        .content(objectMapper.writeValueAsString(new UserRequest())))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
@@ -210,9 +221,12 @@ class UserControllerTest {
         when(this.userRepository.save(user)).thenReturn(user);
         when(this.userRepository.findById(1L)).thenReturn(Optional.of(user));
 
+        UserRequest userRequest = new UserRequest();
+        userRequest.setUsername("test2");
+        userRequest.setPassword("test2");
         mockMvc.perform(put(baseUrl + "/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"test2\", \"password\": \"test2\"}"))
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(1)))
@@ -223,9 +237,13 @@ class UserControllerTest {
     @Test
     void updateUserNonExisting() throws Exception {
         when(this.userRepository.findByUsername("nonexistent")).thenReturn(Optional.empty());
+        UserRequest userRequest = new UserRequest();
+        userRequest.setUsername("nonexistent");
+        userRequest.setPassword("nonexistent");
+
         mockMvc.perform(put(baseUrl + "/3")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"test\", \"password\": \"test\"}"))
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -238,9 +256,13 @@ class UserControllerTest {
         when(this.userRepository.save(user)).thenReturn(user);
         when(this.userRepository.findById(1L)).thenReturn(Optional.of(user));
 
+        UserRequest userRequest = new UserRequest();
+        userRequest.setUsername("");
+        userRequest.setPassword("test");
+
         mockMvc.perform(put(baseUrl + "/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"\", \"password\": \"test\"}"))
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -253,9 +275,13 @@ class UserControllerTest {
         when(this.userRepository.save(user)).thenReturn(user);
         when(this.userRepository.findById(1L)).thenReturn(Optional.of(user));
 
+        UserRequest userRequest = new UserRequest();
+        userRequest.setUsername("test");
+        userRequest.setPassword("");
+
         mockMvc.perform(put(baseUrl + "/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"test2\", \"password\": \"\"}"))
+                        .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -269,7 +295,7 @@ class UserControllerTest {
 
         mockMvc.perform(put(baseUrl + "/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"\", \"password\": \"\"}"))
+                        .content(objectMapper.writeValueAsString(new UserRequest())))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 

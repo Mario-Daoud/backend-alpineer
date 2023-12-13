@@ -15,6 +15,7 @@ import java.util.*;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -54,7 +55,7 @@ class LocationControllerTest {
 
         mockMvc.perform(get(baseUrl))
                 .andDo(print())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isEmpty());
     }
@@ -83,7 +84,7 @@ class LocationControllerTest {
 
         mockMvc.perform(get(baseUrl))
                 .andDo(print())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("test"))
                 .andExpect(jsonPath("$[0].country").value("test"));
@@ -95,7 +96,7 @@ class LocationControllerTest {
 
         mockMvc.perform(get(baseUrl + "/featured"))
                 .andDo(print())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isEmpty());
     }
@@ -125,7 +126,7 @@ class LocationControllerTest {
 
         mockMvc.perform(get(baseUrl + "/featured"))
                 .andDo(print())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("test"))
                 .andExpect(jsonPath("$[0].country").value("test"));
@@ -168,7 +169,7 @@ class LocationControllerTest {
 
         mockMvc.perform(get(baseUrl + "/country/1"))
                 .andDo(print())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 

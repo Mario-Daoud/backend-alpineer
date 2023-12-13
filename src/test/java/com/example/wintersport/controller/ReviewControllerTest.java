@@ -9,9 +9,9 @@ import com.example.wintersport.repository.LocationRepository;
 import com.example.wintersport.repository.ReviewRepository;
 import com.example.wintersport.repository.UserRepository;
 import com.example.wintersport.request.ReviewRequest;
-import com.example.wintersport.response.ReviewLocationUserResponse;
 import com.example.wintersport.response.ReviewResponse;
 import com.example.wintersport.service.ReviewService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
@@ -25,6 +25,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -47,11 +48,14 @@ public class ReviewControllerTest {
     private CountryRepository countryRepository;
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private List<Review> reviews;
     private List<User> users;
     private List<Location> locations;
     private List<Country> countries;
+
     @BeforeEach
     void setUp() {
         countries = new ArrayList<>();
@@ -94,7 +98,7 @@ public class ReviewControllerTest {
 
         mockMvc.perform(get(baseUrl))
                 .andDo(print())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].rating").value(review.getRating()))
                 .andExpect(jsonPath("$[0].user").value(user.getUsername()))
@@ -107,7 +111,7 @@ public class ReviewControllerTest {
 
         mockMvc.perform(get(baseUrl))
                 .andDo(print())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isEmpty());
     }
@@ -147,7 +151,7 @@ public class ReviewControllerTest {
 
         mockMvc.perform(get(baseUrl + "/location/1"))
                 .andDo(print())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].rating").value(review.getRating()))
                 .andExpect(jsonPath("$[0].username").value(user.getUsername()));
@@ -196,7 +200,7 @@ public class ReviewControllerTest {
 
         mockMvc.perform(get(baseUrl + "/user/" + user.getId()))
                 .andDo(print())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].rating").value(review.getRating()))
                 .andExpect(jsonPath("$[0].location").value(location.getName()));
@@ -245,7 +249,7 @@ public class ReviewControllerTest {
 
         mockMvc.perform(get(baseUrl + "/" + review.getId()))
                 .andDo(print())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rating").value(review.getRating()))
                 .andExpect(jsonPath("$.user").value(user.getUsername()))
@@ -260,6 +264,7 @@ public class ReviewControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
+
 
     @Test
     void addReview() throws Exception {
@@ -289,30 +294,55 @@ public class ReviewControllerTest {
         review.setRating(5);
         review.setUser(user);
         review.setLocation(location);
-        reviews.add(review);
-        users.add(user);
-        locations.add(location);
-        countries.add(country);
 
-        when(countryRepository.save(country)).thenReturn(country);
-        when(userRepository.save(user)).thenReturn(user);
-        when(locationRepository.save(location)).thenReturn(location);
+        when(countryRepository.save(any(Country.class))).thenReturn(country);
+        when(locationRepository.save(any(Location.class))).thenReturn(location);
+        when(reviewService.addReview(any(Long.class), any(Long.class), any(ReviewRequest.class))).thenReturn(new ReviewResponse(review));
+        when(reviewRepository.save(any(Review.class))).thenReturn(review);
 
-        when(countryRepository.findById(1L)).thenReturn(Optional.of(country));
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(locationRepository.findById(1L)).thenReturn(Optional.of(location));
+        ReviewRequest reviewRequest = new ReviewRequest();
+        reviewRequest.setRating(5);
 
-        when(reviewRepository.save(review)).thenReturn(review);
-
-        mockMvc.perform(post(baseUrl + "/" + user.getId() + "/" + location.getId())
+        mockMvc.perform(post("/api/review/{userId}/{locationId}", user.getId(), location.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"rating\": 5}"))
-                .andDo(print())
-                .andExpect(content().contentType("application/json"))
+                        .content(objectMapper.writeValueAsString(reviewRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.rating").value(review.getRating()))
-                .andExpect(jsonPath("$.user").value(user.getUsername()))
-                .andExpect(jsonPath("$.location").value(location.getName()));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string("location", "http://localhost/api/review/1/1/1"))
+                .andExpect(jsonPath("$.id").value(review.getId()))
+                .andExpect(jsonPath("$.rating").value(review.getRating()));
+    }
+
+    @Test
+    void addReviewNonExistingUser() throws Exception {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        ReviewRequest reviewRequest = new ReviewRequest();
+        reviewRequest.setRating(5);
+
+        mockMvc.perform(post("/api/review/{userId}/{locationId}", 1L, 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequest)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void addReviewNonExistingLocation() throws Exception {
+        User user = new User();
+        user.setUsername("test");
+        user.setPassword("test");
+        user.setId(1L);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(locationRepository.findById(1L)).thenReturn(Optional.empty());
+
+        ReviewRequest reviewRequest = new ReviewRequest();
+        reviewRequest.setRating(5);
+
+        mockMvc.perform(post("/api/review/{userId}/{locationId}", 1L, 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequest)))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -348,10 +378,10 @@ public class ReviewControllerTest {
         when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
 
         mockMvc.perform(put(baseUrl + "/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"rating\": 5}"))
                 .andDo(print())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(review.getId()))
                 .andExpect(jsonPath("$.rating").value(review.getRating()));
@@ -362,7 +392,7 @@ public class ReviewControllerTest {
         when(reviewRepository.findById(1L)).thenReturn(Optional.empty());
 
         mockMvc.perform(put(baseUrl + "/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"rating\": 5}"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -405,7 +435,7 @@ public class ReviewControllerTest {
 
         mockMvc.perform(delete(baseUrl + "/1"))
                 .andDo(print())
-                .andExpect(content().contentType("application/json"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(review.getId()))
                 .andExpect(jsonPath("$.rating").value(review.getRating()));
