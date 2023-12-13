@@ -2,6 +2,7 @@ package com.example.wintersport.controller;
 
 import com.example.wintersport.domain.Country;
 import com.example.wintersport.repository.CountryRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -30,15 +31,19 @@ public class CountryControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+    private List<Country> countries;
 
-    @Test
-    public void testGetAllCountriesExisting() throws Exception {
-        List<Country> countries = List.of(
+    @BeforeEach
+    public void setUp() {
+        countries = List.of(
                 new Country("Netherlands"),
                 new Country("Germany"),
                 new Country("France")
         );
+    }
 
+    @Test
+    public void testGetAllCountriesExisting() throws Exception {
         when(countryRepository.findAll()).thenReturn(countries);
 
         mockMvc.perform(get(baseUrl))

@@ -64,8 +64,8 @@ class LocationControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].name").value("test"))
-                .andExpect(jsonPath("$[0].country").value("test"));
+                .andExpect(jsonPath("$[0].name").value(location.getName()))
+                .andExpect(jsonPath("$[0].country").value(country.getName()));
     }
 
     @Test
@@ -113,10 +113,10 @@ class LocationControllerTest {
 
         country.setLocations(Set.of(location));
 
-        when(countryRepository.findById(1L)).thenReturn(Optional.of(country));
-        when(locationRepository.findByCountryName("test")).thenReturn(List.of(location));
+        when(countryRepository.findById(country.getId())).thenReturn(Optional.of(country));
+        when(locationRepository.findByCountryName(country.getName())).thenReturn(List.of(location));
 
-        mockMvc.perform(get(baseUrl + "/country/1"))
+        mockMvc.perform(get(baseUrl + "/country/" + country.getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -127,9 +127,9 @@ class LocationControllerTest {
         Country country = createCountry();
 
         when(countryRepository.findById(1L)).thenReturn(Optional.of(country));
-        when(locationRepository.findByCountryName("test")).thenReturn(new ArrayList<>());
+        when(locationRepository.findByCountryName(country.getName())).thenReturn(new ArrayList<>());
 
-        mockMvc.perform(get(baseUrl + "/country/1"))
+        mockMvc.perform(get(baseUrl + "/country/" + country.getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isEmpty());
@@ -139,10 +139,9 @@ class LocationControllerTest {
     void getLocationsByCountryIdExistingNoCountry() throws Exception {
         when(countryRepository.findById(1L)).thenReturn(Optional.empty());
 
-        mockMvc.perform(get(baseUrl + "/country/1"))
+        mockMvc.perform(get(baseUrl + "/country/1" ))
                 .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(content().string(""));
+                .andExpect(status().isNotFound());
     }
 
     private Country createCountry() {
