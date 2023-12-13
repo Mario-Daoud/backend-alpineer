@@ -9,3 +9,6 @@ Deze tabel bevat alle locaties waar er gesport kan worden. Een location is altij
 Deze tabel bevat alle reviews. Een review is altijd verbonden aan 1 user en aan 1 location.
 #### User
 Deze tabel bevat alle gebruikers.
+
+## Documentation
+<a href="https://alpineer-backend.azurewebsites.net/swagger-ui/index.html#/location-controller/getAllLocationsWithCountries">API docs</a>
