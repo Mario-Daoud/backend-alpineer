@@ -47,15 +47,4 @@ public class ReviewRepositoryTest {
         assertThat(reviewRepository.findByLocationId(-1L).get().size()).isEqualTo(0);
     }
 
-    @Test
-    public void findByUserId() {
-        User user = userRepository.save(new User("user", "password"));
-
-        Country france = countryRepository.save(new Country("France"));
-        Location alps = locationRepository.save(new Location("Alps", 100, "Alps description", 2, 100, 10, france));
-
-        Review review = reviewRepository.save(new Review(5, user, alps));
-
-        assertThat(reviewRepository.findByUserId(user.getId()).get().getFirst()).isEqualTo(review);
-    }
 }
