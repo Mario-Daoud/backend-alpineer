@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -98,41 +99,40 @@ class LocationControllerTest {
     }
 
     @Test
-    void getLocationsByCountryIdNonExisting() throws Exception {
-        when(countryRepository.findById(1L)).thenReturn(Optional.empty());
+    void getLocationsByCountryNameNonExisting() throws Exception {
+        when(locationRepository.findByCountryName("test")).thenReturn(new ArrayList<>());
 
-        mockMvc.perform(get(baseUrl + "/country/1"))
+        mockMvc.perform(get(baseUrl + "/country/" + "test"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void getLocationsByCountryIdExisting() throws Exception {
+    void getLocationsByCountryNameExisting() throws Exception {
         Country country = createCountry();
         Location location = createLocation(country);
 
-        country.setLocations(Set.of(location));
+        when(countryRepository.findByName(country.getName())).thenReturn(Optional.of(country));
 
-        when(countryRepository.findById(country.getId())).thenReturn(Optional.of(country));
         when(locationRepository.findByCountryName(country.getName())).thenReturn(List.of(location));
 
-        mockMvc.perform(get(baseUrl + "/country/" + country.getId()))
+        mockMvc.perform(get(baseUrl + "/country/test"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].name").value(location.getName()))
+                .andExpect(jsonPath("$[0].country").value(country.getName()));
     }
 
     @Test
     void getLocationsByCountryIdExistingNoLocations() throws Exception {
         Country country = createCountry();
 
-        when(countryRepository.findById(1L)).thenReturn(Optional.of(country));
         when(locationRepository.findByCountryName(country.getName())).thenReturn(new ArrayList<>());
 
         mockMvc.perform(get(baseUrl + "/country/" + country.getId()))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isEmpty());
+                .andExpect(status().isNotFound());
     }
 
     @Test

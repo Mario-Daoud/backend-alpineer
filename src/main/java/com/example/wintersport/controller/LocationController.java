@@ -43,7 +43,7 @@ public class LocationController {
     }
 
     @GetMapping("/country/{countryName}")
-    public ResponseEntity<List<LocationCountryResponse>> getLocationsByCountryId(@PathVariable String countryName) {
+    public ResponseEntity<List<LocationCountryResponse>> getLocationsByCountryName(@PathVariable String countryName) {
         return countryRepository.findByName(countryName)
                 .map(country -> {
                     List<LocationCountryResponse> locationCountryResponses =

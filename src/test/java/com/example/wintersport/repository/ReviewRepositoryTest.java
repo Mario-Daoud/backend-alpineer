@@ -32,7 +32,7 @@ public class ReviewRepositoryTest {
 
         Review review = reviewRepository.save(new Review(5, user, alps));
 
-        assertThat(reviewRepository.findByLocationId(alps.getId()).get().getFirst()).isEqualTo(review);
+        assertThat(reviewRepository.findByLocationId(alps.getId()).get().get(0)).isEqualTo(review);
     }
 
     @Test

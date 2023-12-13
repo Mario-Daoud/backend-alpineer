@@ -53,18 +53,18 @@ public class ReviewControllerTest {
 
     @Test
     void getReviewsByLocationIdExisting() throws Exception {
-        when(reviewRepository.findByLocationId(reviews.getFirst().getLocation().getId())).thenReturn(Optional.of(reviews));
+        when(reviewRepository.findByLocationId(reviews.get(0).getLocation().getId())).thenReturn(Optional.of(reviews));
 
         mockMvc.perform(get(baseUrl + "/location/1"))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].rating").value(reviews.getFirst().getRating()))
-                .andExpect(jsonPath("$[0].username").value(users.getFirst().getUsername()));
+                .andExpect(jsonPath("$[0].rating").value(reviews.get(0).getRating()))
+                .andExpect(jsonPath("$[0].username").value(users.get(0).getUsername()));
     }
 
     @Test
     void getReviewsByLocationIdNonExisting() throws Exception {
-        when(reviewRepository.findByLocationId(reviews.getFirst().getId())).thenReturn(Optional.empty());
+        when(reviewRepository.findByLocationId(reviews.get(0).getId())).thenReturn(Optional.empty());
 
         mockMvc.perform(get(baseUrl + "/location/1"))
                 .andExpect(status().isNotFound());

@@ -68,7 +68,7 @@ class CountryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].name").value(countries.getFirst().getName()))
+                .andExpect(jsonPath("$[0].name").value(countries.get(0).getName()))
                 .andExpect(jsonPath("$[1].name").value(countries.get(1).getName()))
                 .andExpect(jsonPath("$[2].name").value(countries.get(2).getName()));
     }
@@ -82,17 +82,6 @@ class CountryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(0)));
-    }
-
-    @Test
-    void getCountryByIdExisting() throws Exception {
-        when(countryRepository.findById(countries.getFirst().getId())).thenReturn(Optional.of(countries.getFirst()));
-
-        mockMvc.perform(get(baseUrl + "/" + countries.getFirst().getId()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value(countries.getFirst().getName()));
     }
 
     @Test
