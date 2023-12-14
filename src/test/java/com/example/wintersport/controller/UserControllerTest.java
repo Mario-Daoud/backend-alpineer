@@ -3,6 +3,7 @@ package com.example.wintersport.controller;
 import com.example.wintersport.domain.User;
 import com.example.wintersport.repository.UserRepository;
 import com.example.wintersport.request.UserRequest;
+import com.example.wintersport.response.UserResponse;
 import com.example.wintersport.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -230,6 +231,12 @@ class UserControllerTest {
         UserRequest userRequest = new UserRequest();
         userRequest.setUsername("test2");
         userRequest.setPassword("test2");
+
+        User newUser = new User("test2", "test2");
+        newUser.setId(user.getId());
+
+        when(userService.updateUser(any(User.class), any(UserRequest.class))).thenReturn(new UserResponse(newUser));
+
         mockMvc.perform(put(baseUrl + "/" + user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
@@ -256,22 +263,18 @@ class UserControllerTest {
 
     @Test
     void updateUserEmptyUsername() throws Exception {
+        when(userRepository.save(user)).thenReturn(user);
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         UserRequest userRequest = new UserRequest();
         userRequest.setUsername("");
-        userRequest.setPassword("newpassword");
-
-        when(userRepository.save(user)).thenReturn(user);
+        userRequest.setPassword("test2");
 
         mockMvc.perform(put(baseUrl + "/" + user.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", equalTo(1)))
-                .andExpect(jsonPath("$.username", equalTo(user.getUsername())))
-                .andExpect(jsonPath("$.password", equalTo(userRequest.getPassword())));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -287,10 +290,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest)))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", equalTo(1)))
-                .andExpect(jsonPath("$.username", equalTo(userRequest.getUsername())))
-                .andExpect(jsonPath("$.password", equalTo(user.getPassword())));
+                .andExpect(status().isBadRequest());
     }
 
     @Test

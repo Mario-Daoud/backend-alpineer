@@ -65,8 +65,8 @@ public class UserController {
     }
 
     @PutMapping("{userId}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable(name = "userId") Long id, @RequestBody UserRequest userRequest) {
-        if (userRequest.getPassword().isBlank() && userRequest.getUsername().isBlank()) {
+    public ResponseEntity<UserResponse> updateUser(@PathVariable(name = "userId") Long id, @Valid @RequestBody UserRequest userRequest) {
+        if (userRequest.getUsername() == null || userRequest.getPassword() == null) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -75,16 +75,10 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
 
-        User userToUpdate = existingUser.get();
-        if (!userRequest.getPassword().isBlank()) {
-            userToUpdate.setPassword(userRequest.getPassword());
-        }
-        if (!userRequest.getUsername().isBlank()) {
-            userToUpdate.setUsername(userRequest.getUsername());
-        }
+        User user = existingUser.get();
 
+        UserResponse savedUser = userService.updateUser(user, userRequest);
 
-        User updatedUser = userRepository.save(userToUpdate);
-        return ResponseEntity.ok(new UserResponse(updatedUser));
+        return ResponseEntity.ok(savedUser);
     }
 }

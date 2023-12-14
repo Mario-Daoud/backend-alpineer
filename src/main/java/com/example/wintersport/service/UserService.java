@@ -3,6 +3,7 @@ package com.example.wintersport.service;
 import com.example.wintersport.domain.User;
 import com.example.wintersport.repository.UserRepository;
 import com.example.wintersport.request.UserRequest;
+import com.example.wintersport.response.UserResponse;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,5 +34,13 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
         return savedUser;
+    }
+
+    public UserResponse updateUser(User user, UserRequest userRequest) {
+        user.setUsername(userRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+
+        User savedUser = userRepository.save(user);
+        return new UserResponse(savedUser);
     }
 }
