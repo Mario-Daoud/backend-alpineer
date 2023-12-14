@@ -52,10 +52,10 @@ class UserControllerTest {
     }
 
     @Test
-    void getUserByIdExisting() throws Exception {
-        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+    void getUserByUsernameExisting() throws Exception {
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
 
-        mockMvc.perform(get(baseUrl + "/" + user.getId()))
+        mockMvc.perform(get(baseUrl + "/" + user.getUsername()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -65,10 +65,10 @@ class UserControllerTest {
     }
 
     @Test
-    void getUserByIdNonExisting() throws Exception {
-        when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
+    void getUserByUsernameNotExisting() throws Exception {
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.empty());
 
-        mockMvc.perform(get(baseUrl + "/" + user.getId()))
+        mockMvc.perform(get(baseUrl + "/" + user.getUsername()))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }

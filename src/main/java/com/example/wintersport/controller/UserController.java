@@ -27,9 +27,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("{userId}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable(name = "userId") Long id) {
-        return userRepository.findById(id)
+    @GetMapping("{username}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable(name = "username") String username) {
+        return userRepository.findByUsername(username)
                 .map(user -> ResponseEntity.ok(new UserResponse(user)))
                 .orElse(ResponseEntity.notFound().build());
     }
