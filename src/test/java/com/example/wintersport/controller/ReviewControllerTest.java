@@ -52,23 +52,20 @@ public class ReviewControllerTest {
     }
 
     @Test
-    void getReviewsByLocationIdExisting() throws Exception {
-        when(reviewRepository.findByLocationId(reviews.get(0).getLocation().getId())).thenReturn(Optional.of(reviews));
-
-        mockMvc.perform(get(baseUrl + "/location/1"))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+    void getAverageRatingExisting() throws Exception {
+        when(reviewRepository.findByLocationId(any())).thenReturn(Optional.of(reviews));
+        mockMvc.perform(get(baseUrl + "/average/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].rating").value(reviews.get(0).getRating()))
-                .andExpect(jsonPath("$[0].username").value(users.get(0).getUsername()));
+                .andExpect(content().string("4.0"));
     }
 
     @Test
-    void getReviewsByLocationIdNonExisting() throws Exception {
-        when(reviewRepository.findByLocationId(reviews.get(0).getId())).thenReturn(Optional.empty());
-
-        mockMvc.perform(get(baseUrl + "/location/1"))
+    void getAverageRatingNotExisting() throws Exception {
+        when(reviewRepository.findByLocationId(any())).thenReturn(Optional.empty());
+        mockMvc.perform(get(baseUrl + "/average/1"))
                 .andExpect(status().isNotFound());
     }
+
 
     private void createTestData() {
         Country country = new Country();
@@ -95,10 +92,16 @@ public class ReviewControllerTest {
         review.setRating(5);
         review.setUser(user);
         review.setLocation(location);
+        Review review1 = new Review();
+        review1.setId(2L);
+        review1.setRating(3);
+        review1.setUser(user);
+        review1.setLocation(location);
 
         countries.add(country);
         locations.add(location);
         users.add(user);
         reviews.add(review);
+        reviews.add(review1);
     }
 }
