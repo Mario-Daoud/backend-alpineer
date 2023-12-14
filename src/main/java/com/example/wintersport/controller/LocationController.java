@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/location")
+@RequestMapping("/api/locations")
 @CrossOrigin
 public class LocationController {
     private final LocationRepository locationRepository;

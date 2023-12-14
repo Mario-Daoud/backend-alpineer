@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 @AutoConfigureMockMvc(addFilters = false)
 class LocationControllerTest {
 
-    private final String baseUrl = "/api/location";
+    private final String baseUrl = "/api/locations";
 
     @MockBean
     private LocationRepository locationRepository;

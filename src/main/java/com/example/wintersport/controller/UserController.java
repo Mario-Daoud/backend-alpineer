@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 @CrossOrigin
 public class UserController {
     private final UserRepository userRepository;

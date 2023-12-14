@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/country")
+@RequestMapping("/api/countries")
 @CrossOrigin
 public class CountryController {
     private final CountryRepository countryRepository;

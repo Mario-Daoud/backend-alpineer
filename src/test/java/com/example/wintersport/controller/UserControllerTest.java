@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 @AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
 
-    private final String baseUrl = "/api/user";
+    private final String baseUrl = "/api/users";
 
     @MockBean
     private UserRepository userRepository;

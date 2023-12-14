@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class CountryControllerTest {
 
-    private final String baseUrl = "/api/country";
+    private final String baseUrl = "/api/countries";
 
     @MockBean
     private CountryRepository countryRepository;
