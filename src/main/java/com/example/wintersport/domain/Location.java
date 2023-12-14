@@ -5,7 +5,9 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -34,7 +36,7 @@ public class Location {
     @NotNull
     private Country country;
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private Set<Review> reviews;
+    private List<Review> reviews;
 
     public Location() {
     }
@@ -47,7 +49,7 @@ public class Location {
         this.trackLength = trackLength;
         this.chairlifts = chairlifts;
         this.country = country;
-        this.reviews = new HashSet<>();
+        this.reviews = new ArrayList<>();
     }
 
     public Long getId() {
@@ -74,11 +76,11 @@ public class Location {
         this.country = country;
     }
 
-    public Set<Review> getReviews() {
+    public List<Review> getReviews() {
         return reviews;
     }
 
-    public void setReviews(Set<Review> reviews) {
+    public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
 
