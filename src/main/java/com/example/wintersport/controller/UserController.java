@@ -27,6 +27,13 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("{userId}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable(name = "userId") Long id) {
+        return userRepository.findById(id)
+                .map(user -> ResponseEntity.ok(new UserResponse(user)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping("login")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> login(@RequestBody @Valid UserRequest userRequest) {

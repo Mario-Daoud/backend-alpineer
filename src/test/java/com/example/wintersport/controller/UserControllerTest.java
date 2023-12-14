@@ -52,6 +52,28 @@ class UserControllerTest {
     }
 
     @Test
+    void getUserByIdExisting() throws Exception {
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        mockMvc.perform(get(baseUrl + "/" + user.getId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.username", equalTo(user.getUsername())))
+                .andExpect(jsonPath("$.password", equalTo(user.getPassword())));
+    }
+
+    @Test
+    void getUserByIdNonExisting() throws Exception {
+        when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
+
+        mockMvc.perform(get(baseUrl + "/" + user.getId()))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void loginExisting() throws Exception {
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         when(userService.loginUser(any(UserRequest.class))).thenReturn(true);
