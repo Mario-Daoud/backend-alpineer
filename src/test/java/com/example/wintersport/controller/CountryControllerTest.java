@@ -110,7 +110,7 @@ class CountryControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(country.getName()))
-                .andExpect(header().string("Location", "http://localhost/api/country/" + country.getId()));
+                .andExpect(header().string("Location", "http://localhost/api/countries/" + country.getId()));
     }
 
     @Test
