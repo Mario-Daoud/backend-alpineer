@@ -6,8 +6,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-
 @Component
 public class CommandLineRunnerAtStartup implements CommandLineRunner {
 
@@ -31,232 +29,114 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-            Country c1 = new Country();
-            c1.setName("France");
-            countryRepository.save(c1);
+        // add countries
+        Country c1 = new Country();
+        c1.setName("France");
+        countryRepository.save(c1);
 
-            Country c2 = new Country();
-            c2.setName("Italy");
-            countryRepository.save(c2);
+        Country c2 = new Country();
+        c2.setName("Italy");
+        countryRepository.save(c2);
 
-            Country c3 = new Country();
-            c3.setName("Switzerland");
-            countryRepository.save(c3);
+        Country c3 = new Country();
+        c3.setName("Switzerland");
+        countryRepository.save(c3);
 
-            Country c4 = new Country();
-            c4.setName("Austria");
-            countryRepository.save(c4);
+        Country c4 = new Country();
+        c4.setName("Austria");
+        countryRepository.save(c4);
 
-            Country c5 = new Country();
-            c5.setName("Germany");
-            countryRepository.save(c5);
+        Country c5 = new Country();
+        c5.setName("Germany");
+        countryRepository.save(c5);
 
-            Country c6 = new Country();
-            c6.setName("USA");
-            countryRepository.save(c6);
+        Country c6 = new Country();
+        c6.setName("USA");
+        countryRepository.save(c6);
 
-            Country c7 = new Country();
-            c7.setName("Canada");
-            countryRepository.save(c7);
+        Country c7 = new Country();
+        c7.setName("Canada");
+        countryRepository.save(c7);
 
-            Location l1 = new Location();
-            l1.setName("Alps");
-            l1.setCountry(countryRepository.findByName("France").get());
-            l1.setSnowHeight(122);
-            l1.setDescription("Perfect for beginners");
-            l1.setTrackLength(25);
-            l1.setDegrees(-3);
-            l1.setChairlifts(3);
-            locationRepository.save(l1);
+        Country c8 = new Country();
+        c8.setName("Japan");
+        countryRepository.save(c8);
 
-            Location l2 = new Location();
-            l2.setName("Chamonix");
-            l2.setCountry(countryRepository.findByName("France").get());
-            l2.setSnowHeight(150);
-            l2.setDescription("Iconic French ski resort");
-            l2.setTrackLength(35);
-            l2.setDegrees(-6);
-            l2.setChairlifts(4);
-            locationRepository.save(l2);
+        Country c9 = new Country();
+        c9.setName("Sweden");
+        countryRepository.save(c9);
 
-            Location l3 = new Location();
-            l3.setName("Dolomites");
-            l3.setCountry(countryRepository.findByName("Italy").get());
-            l3.setSnowHeight(180);
-            l3.setDescription("Stunning views and challenging slopes");
-            l3.setTrackLength(30);
-            l3.setDegrees(-5);
-            l3.setChairlifts(5);
-            locationRepository.save(l3);
+        Country c10 = new Country();
+        c10.setName("Norway");
+        countryRepository.save(c10);
 
-            Location l4 = new Location();
-            l4.setName("Sestriere");
-            l4.setCountry(countryRepository.findByName("Italy").get());
-            l4.setSnowHeight(160);
-            l4.setDescription("Host of the 2006 Winter Olympics");
-            l4.setTrackLength(28);
-            l4.setDegrees(-4);
-            l4.setChairlifts(3);
-            locationRepository.save(l4);
-
-            Location l5 = new Location();
-            l5.setName("Zermatt");
-            l5.setCountry(countryRepository.findByName("Switzerland").get());
-            l5.setSnowHeight(200);
-            l5.setDescription("Home to the Matterhorn");
-            l5.setTrackLength(40);
-            l5.setDegrees(-8);
-            l5.setChairlifts(6);
-            locationRepository.save(l5);
-
-            Location l6 = new Location();
-            l6.setName("Verbier");
-            l6.setCountry(countryRepository.findByName("Switzerland").get());
-            l6.setSnowHeight(180);
-            l6.setDescription("Famous for its off-piste skiing");
-            l6.setTrackLength(35);
-            l6.setDegrees(-7);
-            l6.setChairlifts(5);
-            locationRepository.save(l6);
-
-            Location l7 = new Location();
-            l7.setName("Kitzbühel");
-            l7.setCountry(countryRepository.findByName("Austria").get());
-            l7.setSnowHeight(140);
-            l7.setDescription("Classic Austrian ski resort");
-            l7.setTrackLength(25);
-            l7.setDegrees(-2);
-            l7.setChairlifts(4);
-            locationRepository.save(l7);
-
-            Location l8 = new Location();
-            l8.setName("St. Anton");
-            l8.setCountry(countryRepository.findByName("Austria").get());
-            l8.setSnowHeight(160);
-            l8.setDescription("Known for challenging terrain");
-            l8.setTrackLength(30);
-            l8.setDegrees(-4);
-            l8.setChairlifts(3);
-            locationRepository.save(l8);
-
-            Location l9 = new Location();
-            l9.setName("Garmisch-Partenkirchen");
-            l9.setCountry(countryRepository.findByName("Germany").get());
-            l9.setSnowHeight(140);
-            l9.setDescription("Bavarian ski resort");
-            l9.setTrackLength(28);
-            l9.setDegrees(-3);
-            l9.setChairlifts(3);
-            locationRepository.save(l9);
-
-            Location l10 = new Location();
-            l10.setName("Aspen");
-            l10.setCountry(countryRepository.findByName("USA").get());
-            l10.setSnowHeight(180);
-            l10.setDescription("Famous American skiing destination");
-            l10.setTrackLength(40);
-            l10.setDegrees(-8);
-            l10.setChairlifts(6);
-            locationRepository.save(l10);
-
-            Location l11 = new Location();
-            l11.setName("Banff");
-            l11.setCountry(countryRepository.findByName("Canada").get());
-            l11.setSnowHeight(160);
-            l11.setDescription("Canadian Rockies beauty");
-            l11.setTrackLength(35);
-            l11.setDegrees(-7);
-            l11.setChairlifts(5);
-            locationRepository.save(l11);
+        // add user
+        User user = new User();
+        user.setUsername("username");
+        user.setPassword(passwordEncoder.encode("password"));
+        userRepository.save(user);
 
 
-            User u1 = new User();
-            u1.setUsername("username");
-            u1.setPassword(passwordEncoder.encode("password"));
-            userRepository.save(u1);
+        // add locations
+        addLocationAndReviews("Alps", "Perfect for beginners", 122, 25, -3, 3, c1, user);
+        addLocationAndReviews("Chamonix", "Iconic French ski resort", 150, 35, -6, 4, c1, user);
+        addLocationAndReviews("French Riviera", "Coastal skiing experience", 100, 20, 2, 2, c1, user);
 
-            User u2 = new User();
-            u2.setUsername("user2");
-            u2.setPassword(passwordEncoder.encode("password2"));
-            userRepository.save(u2);
+        addLocationAndReviews("Dolomites", "Stunning views and challenging slopes", 180, 30, -5, 5, c2, user);
+        addLocationAndReviews("Sestriere", "Host of the 2006 Winter Olympics", 160, 28, -4, 3, c2, user);
+        addLocationAndReviews("Cortina d'Ampezzo", "Italy's most famous ski resort", 140, 25, -3, 3, c2, user);
 
+        addLocationAndReviews("Zermatt", "Home to the Matterhorn", 200, 40, -8, 6, c3, user);
+        addLocationAndReviews("Verbier", "Famous for its off-piste skiing", 180, 35, -7, 5, c3, user);
+        addLocationAndReviews("Swiss Alps", "Scenic beauty and diverse terrain", 170, 32, -6, 4, c3, user);
 
-            Review r1 = new Review();
-            Location location1 = locationRepository.findByName("Alps").get();
-            r1.setLocation(location1);
-            r1.setRating(4);
-            r1.setUser(userRepository.findByUsername("username").get());
-            reviewRepository.save(r1);
+        addLocationAndReviews("Kitzbühel", "Classic Austrian ski resort", 140, 25, -2, 4, c4, user);
+        addLocationAndReviews("St. Anton", "Known for challenging terrain", 160, 30, -4, 3, c4, user);
+        addLocationAndReviews("Innsbruck", "Historic ski destination", 120, 22, -1, 2, c4, user);
 
-            Review r2 = new Review();
-            Location location2 = locationRepository.findByName("Dolomites").get();
-            r2.setLocation(location2);
-            r2.setRating(5);
-            r2.setUser(userRepository.findByUsername("user2").get());
-            reviewRepository.save(r2);
+        addLocationAndReviews("Garmisch-Partenkirchen", "Bavarian ski resort", 140, 28, -3, 3, c5, user);
+        addLocationAndReviews("Black Forest", "Wooded slopes and cultural charm", 110, 18, 1, 2, c5, user);
+        addLocationAndReviews("Bavarian Alps", "Traditional skiing experience", 130, 24, -1, 2, c5, user);
 
-            Review r3 = new Review();
-            Location location3 = locationRepository.findByName("Garmisch-Partenkirchen").get();
-            r3.setLocation(location3);
-            r3.setRating(4);
-            r3.setUser(userRepository.findByUsername("user2").get());
-            reviewRepository.save(r3);
+        addLocationAndReviews("Aspen", "Famous American skiing destination", 180, 40, -8, 6, c6, user);
+        addLocationAndReviews("Vail", "Largest ski resort in Colorado", 160, 35, -7, 5, c6, user);
+        addLocationAndReviews("Lake Tahoe", "California-Nevada border skiing", 150, 30, -6, 4, c6, user);
 
-            Review r4 = new Review();
-            Location location4 = locationRepository.findByName("Chamonix").get();
-            r4.setLocation(location4);
-            r4.setRating(5);
-            r4.setUser(userRepository.findByUsername("user2").get());
-            reviewRepository.save(r4);
+        addLocationAndReviews("Banff", "Canadian Rockies beauty", 160, 35, -7, 5, c7, user);
+        addLocationAndReviews("Whistler", "Largest ski resort in North America", 200, 40, -8, 6, c7, user);
+        addLocationAndReviews("Jasper", "Alberta's tranquil skiing destination", 140, 25, -6, 4, c7, user);
 
-            Review r5 = new Review();
-            Location location5 = locationRepository.findByName("Aspen").get();
-            r5.setLocation(location5);
-            r5.setRating(5);
-            r5.setUser(userRepository.findByUsername("user2").get());
-            reviewRepository.save(r5);
+        addLocationAndReviews("Niseko", "Japan's most famous ski resort", 200, 30, -5, 5, c8, user);
+        addLocationAndReviews("Hakuba", "Japanese Alps skiing experience", 160, 28, -4, 3, c8, user);
+        addLocationAndReviews("Shiga Kogen", "Largest ski area in Japan", 180, 32, -5, 4, c8, user);
 
-            Review r6 = new Review();
-            Location location6 = locationRepository.findByName("Banff").get();
-            r6.setLocation(location6);
-            r6.setRating(4);
-            r6.setUser(userRepository.findByUsername("user2").get());
-            reviewRepository.save(r6);
+        addLocationAndReviews("Åre", "Sweden's largest ski resort", 140, 25, -2, 4, c9, user);
+        addLocationAndReviews("Sälen", "Scandinavia's largest ski area", 120, 22, -3, 3, c9, user);
+        addLocationAndReviews("Vemdalen", "Family-friendly skiing in Sweden", 130, 24, -1, 2, c9, user);
 
-            Review r7 = new Review();
-            Location location7 = locationRepository.findByName("Dolomites").get();
-            r7.setLocation(location7);
-            r7.setRating(3);
-            r7.setUser(userRepository.findByUsername("username").get());
-            reviewRepository.save(r7);
-
-            Review r8 = new Review();
-            Location location8 = locationRepository.findByName("Chamonix").get();
-            r8.setLocation(location8);
-            r8.setRating(5);
-            r8.setUser(userRepository.findByUsername("user2").get());
-            reviewRepository.save(r8);
-
-            Review r9 = new Review();
-            Location location10 = locationRepository.findByName("Verbier").get();
-            r9.setLocation(location10);
-            r9.setRating(4);
-            r9.setUser(userRepository.findByUsername("username").get());
-            reviewRepository.save(r9);
-
-            Review r10 = new Review();
-            Location location11 = locationRepository.findByName("Aspen").get();
-            r10.setLocation(location11);
-            r10.setRating(3);
-            r10.setUser(userRepository.findByUsername("username").get());
-            reviewRepository.save(r10);
-
-            Review r11 = new Review();
-            Location location12 = locationRepository.findByName("Banff").get();
-            r11.setLocation(location12);
-            r11.setRating(5);
-            r11.setUser(userRepository.findByUsername("username").get());
-            reviewRepository.save(r11);
+        addLocationAndReviews("Hemsedal", "Norway's most popular ski resort", 160, 30, -4, 3, c10, user);
+        addLocationAndReviews("Trysil", "Largest ski resort in Norway", 150, 28, -3, 3, c10, user);
+        addLocationAndReviews("Geilo", "Traditional Norwegian skiing", 130, 24, -2, 2, c10, user);
     }
 
+    private void addLocationAndReviews(String name, String description, int snowHeight, int trackLength,
+                                       int degrees, int chairlifts, Country country, User user) {
+        Location location = new Location();
+        location.setName(name);
+        location.setDescription(description);
+        location.setSnowHeight(snowHeight);
+        location.setTrackLength(trackLength);
+        location.setDegrees(degrees);
+        location.setChairlifts(chairlifts);
+        location.setCountry(country);
+        locationRepository.save(location);
+
+        for (int i = 0; i <= 3; i++) {
+            Review review = new Review();
+            review.setLocation(location);
+            review.setRating((int) (Math.random() * 5) + 1);
+            review.setUser(userRepository.save(user));
+            reviewRepository.save(review);
+        }
+    }
 }
