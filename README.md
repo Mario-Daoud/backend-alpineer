@@ -1,5 +1,8 @@
 # eindopdracht2023-Mario-Daoud
-Wintersport API
+Application that helps you explore, discover and pick out wintersport locations to visit.
+
+## Database 
+![diagram](https://github.com/Mario-Daoud/backend-alpineer/assets/113902874/bb390086-1f82-40ee-b097-376774e447f1)
 
 #### Country
 Deze tabel bevat alle landen. Een land kan meerdere locaties hebben.
