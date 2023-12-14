@@ -1,11 +1,14 @@
 package com.example.wintersport.controller;
 
+import com.example.wintersport.domain.Review;
 import com.example.wintersport.repository.ReviewRepository;
+import com.example.wintersport.response.ReviewResponse;
 import com.example.wintersport.response.ReviewUserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/review")
@@ -17,10 +20,20 @@ public class ReviewController {
         this.reviewRepository = reviewRepository;
     }
 
-    @GetMapping("/location/{locationId}")
-    public ResponseEntity<List<ReviewUserResponse>> getReviewsByLocationId(@PathVariable Long locationId) {
-        return reviewRepository.findByLocationId(locationId)
-                .map(reviews -> ResponseEntity.ok(reviews.stream().map(ReviewUserResponse::new).toList()))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/average/{locationId}")
+    public ResponseEntity<Double> getAverageRating(@PathVariable Long locationId) {
+        Double rating = 0.0;
+        Optional<List<Review>> reviews = reviewRepository.findByLocationId(locationId);
+        if (reviews.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        for (Review review : reviews.get()) {
+            rating += review.getRating();
+        }
+
+        rating = rating / reviews.get().size();
+        return ResponseEntity.ok(rating);
+
     }
 }
