@@ -35,7 +35,7 @@ public class Location {
     @JoinColumn(name = "country_id")
     @NotNull
     private Country country;
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Review> reviews;
 
     public Location() {
