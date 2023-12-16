@@ -9,7 +9,6 @@ import com.example.wintersport.repository.LocationRepository;
 import com.example.wintersport.repository.ReviewRepository;
 import com.example.wintersport.repository.UserRepository;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
@@ -71,7 +70,6 @@ class LocationControllerTest {
 
         location.setReviews(List.of(review));
 
-        when(reviewRepository.findByLocationId(location.getId())).thenReturn(Optional.of(List.of(review)));
         when(locationRepository.findAll()).thenReturn(List.of(location));
 
         mockMvc.perform(get(baseUrl))

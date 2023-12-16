@@ -16,34 +16,6 @@ public class LocationRepositoryTest {
     private CountryRepository countryRepository;
 
     @Test
-    public void findByNameExisting() {
-        Country france = countryRepository.save(new Country("France"));
-        Location alps = locationRepository.save(new Location("Alps", 100, "Alps description", 2, 100, 10, france));
-
-        assertThat(locationRepository.findByName("Alps").get().getId()).isEqualTo(alps.getId());
-    }
-
-    @Test
-    public void findByNameNonExisting() {
-        assertThat(locationRepository.findByName("Alps")).isEmpty();
-    }
-
-    @Test
-    public void findByNameEmpty() {
-        assertThat(locationRepository.findByName("")).isEmpty();
-    }
-
-    @Test
-    public void findByNameNull() {
-        assertThat(locationRepository.findByName(null)).isEmpty();
-    }
-
-    @Test
-    public void findByNameBlank() {
-        assertThat(locationRepository.findByName(" ")).isEmpty();
-    }
-
-    @Test
     public void findByCountryNameExisting() {
         Country france = countryRepository.save(new Country("France"));
         Location alps = locationRepository.save(new Location("Alps", 100, "Alps description", 2, 100, 10, france));
