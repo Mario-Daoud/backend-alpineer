@@ -94,7 +94,7 @@ class CountryControllerTest {
     }
 
     @Test
-    void createCountry() throws Exception {
+    void createCountryNonExisting() throws Exception {
         Country country = new Country("Netherlands");
         country.setId(1L);
 
@@ -111,6 +111,23 @@ class CountryControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(country.getName()))
                 .andExpect(header().string("Location", "http://localhost/api/countries/" + country.getId()));
+    }
+
+    @Test
+    void createCountryExisting() throws Exception {
+        Country country = new Country("Netherlands");
+        country.setId(1L);
+
+        when(countryRepository.findByName("Netherlands")).thenReturn(Optional.of(country));
+
+        CountryRequest countryRequest = new CountryRequest();
+        countryRequest.setName("Netherlands");
+
+        mockMvc.perform(post(baseUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(countryRequest)))
+                .andDo(print())
+                .andExpect(status().isConflict());
     }
 
     @Test

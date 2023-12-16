@@ -6,6 +6,7 @@ import com.example.wintersport.repository.CountryRepository;
 import com.example.wintersport.repository.LocationRepository;
 import com.example.wintersport.request.CountryRequest;
 import com.example.wintersport.response.CountryResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +47,12 @@ public class CountryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CountryResponse> createCountry(@RequestBody CountryRequest countryRequest) {
+    public ResponseEntity<CountryResponse> createCountry(@Valid @RequestBody CountryRequest countryRequest) {
+        Optional<Country> existingCountry = this.countryRepository.findByName(countryRequest.getName());
+        if (existingCountry.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
         Country country = new Country();
         country.setName(countryRequest.getName());
 
@@ -62,7 +68,7 @@ public class CountryController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CountryResponse> updateCountry(@PathVariable Long id,
-                                                         @RequestBody CountryRequest countryRequest) {
+                                                         @Valid @RequestBody CountryRequest countryRequest) {
         return this.countryRepository.findById(id)
                 .map(country -> {
                     country.setName(countryRequest.getName());
