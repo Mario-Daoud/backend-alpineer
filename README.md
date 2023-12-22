@@ -13,5 +13,10 @@ Deze tabel bevat alle reviews. Een review is altijd verbonden aan 1 user en aan 
 #### User
 Deze tabel bevat alle gebruikers.
 
+## User credentials
+How to log in?
+- username: `eval`
+- password: `evalpass`
+
 ## Documentation
 <a href="https://alpineer-backend.azurewebsites.net/swagger-ui/index.html#/location-controller/getAllLocationsWithCountries">API docs</a>
