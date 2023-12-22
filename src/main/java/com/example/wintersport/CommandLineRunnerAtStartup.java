@@ -18,7 +18,8 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
     public CommandLineRunnerAtStartup(CountryRepository countryRepository,
                                       LocationRepository locationRepository,
                                       UserRepository userRepository,
-                                      ReviewRepository reviewRepository) {
+                                      ReviewRepository reviewRepository
+    ) {
         this.countryRepository = countryRepository;
         this.locationRepository = locationRepository;
         this.userRepository = userRepository;
@@ -76,6 +77,10 @@ public class CommandLineRunnerAtStartup implements CommandLineRunner {
         user.setPassword(passwordEncoder.encode("password"));
         userRepository.save(user);
 
+        User user2 = new User();
+        user2.setUsername("eval");
+        user2.setPassword(passwordEncoder.encode("evalpass"));
+        userRepository.save(user2);
 
         // add locations
         addLocationAndReviews("Alps", "Perfect for beginners", 122, 25, -3, 3, c1, user);
