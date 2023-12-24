@@ -20,7 +20,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void findByUsernameNonExisting() {
+    public void findByUsernameNotExisting() {
         assertThat(userRepository.findByUsername("username")).isEmpty();
     }
 

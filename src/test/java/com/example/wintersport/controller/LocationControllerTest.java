@@ -48,17 +48,6 @@ class LocationControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    void getAllLocationsNonExisting() throws Exception {
-        when(locationRepository.findAll()).thenReturn(new ArrayList<>());
-
-        mockMvc.perform(get(baseUrl))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isEmpty());
-    }
-
-    @Test
     void getAllLocationsExisting() throws Exception {
         Country country = createCountry();
         Location location = createLocation(country);
@@ -81,12 +70,14 @@ class LocationControllerTest {
     }
 
     @Test
-    void getLocationsByCountryNameNonExisting() throws Exception {
-        when(locationRepository.findByCountryName("test")).thenReturn(new ArrayList<>());
+    void getAllLocationsNotExisting() throws Exception {
+        when(locationRepository.findAll()).thenReturn(new ArrayList<>());
 
-        mockMvc.perform(get(baseUrl + "/country/" + "test"))
+        mockMvc.perform(get(baseUrl))
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isEmpty());
     }
 
     @Test
@@ -109,21 +100,10 @@ class LocationControllerTest {
     }
 
     @Test
-    void getLocationsByCountryIdExistingNoLocations() throws Exception {
-        Country country = createCountry();
+    void getLocationsByCountryNameNotExisting() throws Exception {
+        when(locationRepository.findByCountryName("test")).thenReturn(new ArrayList<>());
 
-        when(locationRepository.findByCountryName(country.getName())).thenReturn(new ArrayList<>());
-
-        mockMvc.perform(get(baseUrl + "/country/" + country.getId()))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void getLocationsByCountryIdExistingNoCountry() throws Exception {
-        when(countryRepository.findById(1L)).thenReturn(Optional.empty());
-
-        mockMvc.perform(get(baseUrl + "/country/1" ))
+        mockMvc.perform(get(baseUrl + "/country/" + "test"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }

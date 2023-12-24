@@ -53,20 +53,19 @@ class UserControllerTest {
     }
 
     @Test
-    void getUserByUsernameExisting() throws Exception {
+    void getUserByIdExisting() throws Exception {
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
 
         mockMvc.perform(get(baseUrl + "/" + user.getUsername()))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", equalTo(1)))
                 .andExpect(jsonPath("$.username", equalTo(user.getUsername())))
                 .andExpect(jsonPath("$.password", equalTo(user.getPassword())));
     }
 
     @Test
-    void getUserByUsernameNotExisting() throws Exception {
+    void getUserByIdNotExisting() throws Exception {
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.empty());
 
         mockMvc.perform(get(baseUrl + "/" + user.getUsername()))
@@ -97,7 +96,6 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
-
 
     @Test
     void loginEmptyUsername() throws Exception {

@@ -24,7 +24,7 @@ public class LocationRepositoryTest {
     }
 
     @Test
-    public void findByCountryNameNonExisting() {
+    public void findByCountryNameNotExisting() {
         assertThat(locationRepository.findByCountryName("France")).isEmpty();
     }
 

@@ -13,7 +13,7 @@ public class CountryRepositoryTest {
     private CountryRepository countryRepository;
 
     @Test
-    public void findAll3Countries() {
+    public void findAllCountriesExisting() {
         countryRepository.save(new Country("Netherlands"));
         countryRepository.save(new Country("Germany"));
         countryRepository.save(new Country("France"));
@@ -26,7 +26,7 @@ public class CountryRepositoryTest {
     }
 
     @Test
-    public void findAllNoCountries() {
+    public void findAllNotExisting() {
         assertThat(countryRepository.findAll()).isEmpty();
     }
 
@@ -38,7 +38,7 @@ public class CountryRepositoryTest {
     }
 
     @Test
-    public void findByNameNonExisting() {
+    public void findByNameNotExisting() {
         assertThat(countryRepository.findByName("Netherlands")).isEmpty();
     }
 

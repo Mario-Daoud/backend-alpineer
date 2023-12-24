@@ -67,7 +67,7 @@ public class UserServiceTest {
 
 
     @Test
-    void registerUserNonExisisting() {
+    void registerUserNotExisting() {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User user = new User();
         user.setUsername("username");
@@ -177,7 +177,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void updateUserNonExisting() {
+    void updateUserNotExisting() {
         User existingUser = new User();
         existingUser.setUsername("existingUser");
         existingUser.setPassword(passwordEncoder.encode("oldPassword"));

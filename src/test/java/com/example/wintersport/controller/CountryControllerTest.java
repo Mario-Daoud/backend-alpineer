@@ -85,6 +85,20 @@ class CountryControllerTest {
     }
 
     @Test
+    void getCountryByIdExisting() throws Exception {
+        Country country = new Country("Netherlands");
+        country.setId(1L);
+
+        when(countryRepository.findById(1L)).thenReturn(Optional.of(country));
+
+        mockMvc.perform(get(baseUrl + "/1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value(country.getName()));
+    }
+
+    @Test
     void getCountryByIdNotExisting() throws Exception {
         when(countryRepository.findById(1L)).thenReturn(java.util.Optional.empty());
 
@@ -93,8 +107,25 @@ class CountryControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+ @Test
+    void createCountryExisting() throws Exception {
+        Country country = new Country("Netherlands");
+        country.setId(1L);
+
+        when(countryRepository.findByName("Netherlands")).thenReturn(Optional.of(country));
+
+        CountryRequest countryRequest = new CountryRequest();
+        countryRequest.setName("Netherlands");
+
+        mockMvc.perform(post(baseUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(countryRequest)))
+                .andDo(print())
+                .andExpect(status().isConflict());
+    }
+
     @Test
-    void createCountryNonExisting() throws Exception {
+    void createCountryNotExisting() throws Exception {
         Country country = new Country("Netherlands");
         country.setId(1L);
 
@@ -111,23 +142,6 @@ class CountryControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(country.getName()))
                 .andExpect(header().string("Location", "http://localhost/api/countries/" + country.getId()));
-    }
-
-    @Test
-    void createCountryExisting() throws Exception {
-        Country country = new Country("Netherlands");
-        country.setId(1L);
-
-        when(countryRepository.findByName("Netherlands")).thenReturn(Optional.of(country));
-
-        CountryRequest countryRequest = new CountryRequest();
-        countryRequest.setName("Netherlands");
-
-        mockMvc.perform(post(baseUrl)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(countryRequest)))
-                .andDo(print())
-                .andExpect(status().isConflict());
     }
 
     @Test
