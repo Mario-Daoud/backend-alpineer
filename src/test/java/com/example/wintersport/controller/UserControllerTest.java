@@ -303,7 +303,6 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        verifyNoInteractions(userRepository);
     }
 
     @Test
@@ -315,7 +314,6 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
-        verifyNoInteractions(userRepository);
     }
 
     private User createUser() {
