@@ -50,4 +50,4 @@ jobs:
           app-name: 'alpineer-backend'
           slot-name: 'Production'
           package: '*.jar'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F3E3092C1DB845A4A0ABE519474C4DBD }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_18EA845BEF7F483BA62EDA2153316BA7 }}
