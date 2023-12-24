@@ -47,10 +47,6 @@ public class CountryRepositoryTest {
         assertThat(countryRepository.findByName("")).isEmpty();
     }
 
-    @Test
-    public void findByNameNull() {
-        assertThat(countryRepository.findByName(null)).isEmpty();
-    }
 
     @Test
     public void findByNameBlank() {

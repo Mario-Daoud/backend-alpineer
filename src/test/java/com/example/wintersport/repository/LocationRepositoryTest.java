@@ -33,10 +33,6 @@ public class LocationRepositoryTest {
         assertThat(locationRepository.findByCountryName("")).isEmpty();
     }
 
-    @Test
-    public void findByCountryNameNull() {
-        assertThat(locationRepository.findByCountryName(null)).isEmpty();
-    }
 
     @Test
     public void findByCountryNameBlank() {

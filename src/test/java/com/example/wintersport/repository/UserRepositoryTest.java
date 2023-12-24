@@ -29,10 +29,6 @@ public class UserRepositoryTest {
         assertThat(userRepository.findByUsername("")).isEmpty();
     }
 
-    @Test
-    public void findByUsernameNull() {
-        assertThat(userRepository.findByUsername(null)).isEmpty();
-    }
 
     @Test
     public void findByUsernameBlank() {

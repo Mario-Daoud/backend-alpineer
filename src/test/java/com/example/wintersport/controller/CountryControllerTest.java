@@ -145,6 +145,18 @@ class CountryControllerTest {
     }
 
     @Test
+    void createCountryEmptyName() throws Exception {
+        CountryRequest countryRequest = new CountryRequest();
+        countryRequest.setName("");
+
+        mockMvc.perform(post(baseUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(countryRequest)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void updateCountryExisting() throws Exception {
         Country country = new Country("Netherlands");
         country.setId(1L);
@@ -176,6 +188,23 @@ class CountryControllerTest {
                 .content(objectMapper.writeValueAsString(countryRequest)))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateCountryEmptyName() throws Exception {
+        Country country = new Country("Netherlands");
+        country.setId(1L);
+
+        when(countryRepository.findById(1L)).thenReturn(Optional.of(country));
+
+        CountryRequest countryRequest = new CountryRequest();
+        countryRequest.setName("");
+
+        mockMvc.perform(put(baseUrl + "/" + country.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(countryRequest)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 
     @Test
